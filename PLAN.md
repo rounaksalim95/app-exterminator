@@ -10,25 +10,25 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **1.1** Set up Xcode project
+- [x] **1.1** Set up Xcode project
   - SwiftUI App lifecycle
   - macOS 13.0 deployment target
   - Universal binary (Apple Silicon + Intel)
   - Configure app icon placeholder
   - Set up basic project structure (folders for Views, Models, Services)
 
-- [ ] **1.2** Create main window UI
+- [x] **1.2** Create main window UI
   - App window with proper sizing and title
   - Follows system light/dark mode
   - Basic drop zone placeholder (non-functional)
 
-- [ ] **1.3** Set up data models
+- [x] **1.3** Set up data models
   - `TargetApplication` struct
   - `DiscoveredFile` struct
   - `FileCategory` enum
   - `DeletionRecord` struct
 
-**Deliverable**: App launches and displays main window with placeholder UI.
+**Deliverable**: App launches and displays main window with placeholder UI. ✅
 
 ---
 
@@ -38,23 +38,23 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **2.1** Implement drop zone
+- [x] **2.1** Implement drop zone
   - Accept `.app` bundle drops
   - Visual feedback on drag enter/exit
   - Validate dropped item is a valid app bundle
 
-- [ ] **2.2** Create `AppAnalyzer` service
+- [x] **2.2** Create `AppAnalyzer` service
   - Extract bundle ID from `Info.plist`
   - Extract app name, version, icon
   - Detect if app is a system application
   - Handle invalid/corrupted bundles gracefully
 
-- [ ] **2.3** Display app info after drop
+- [x] **2.3** Display app info after drop
   - Show app icon, name, bundle ID, version
   - Transition from drop zone to app info view
   - "Cancel" button to return to drop zone
 
-**Deliverable**: User can drop an app and see its metadata displayed.
+**Deliverable**: User can drop an app and see its metadata displayed. ✅
 
 ---
 
