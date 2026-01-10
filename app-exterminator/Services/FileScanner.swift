@@ -93,10 +93,7 @@ struct FileScanner {
     private func scanDirectory(_ directory: ScanDirectory, searchTerms: [String], fileManager: FileManager) -> [DiscoveredFile] {
         var results: [DiscoveredFile] = []
         
-        print("Scanning directory: \(directory.path)")
-        
         guard fileManager.fileExists(atPath: directory.path) else {
-            print("  Directory does not exist: \(directory.path)")
             return results
         }
         
@@ -109,11 +106,8 @@ struct FileScanner {
                 options: []
             )
             
-            print("  Found \(contents.count) items in \(directory.path)")
-            
             for itemURL in contents {
                 if matchesSearchTerms(itemURL: itemURL, searchTerms: searchTerms) {
-                    print("  MATCH: \(itemURL.lastPathComponent)")
                     let size = calculateSize(at: itemURL, fileManager: fileManager)
                     let requiresAdmin = directory.requiresAdmin || !fileManager.isWritableFile(atPath: itemURL.path)
                     
@@ -126,10 +120,8 @@ struct FileScanner {
                     results.append(file)
                 }
             }
-            
-            print("  Matched \(results.count) files in \(directory.path)")
         } catch {
-            print("Error scanning \(directory.path): \(error.localizedDescription)")
+            // Directory not accessible, skip silently
         }
         
         return results
@@ -200,9 +192,6 @@ struct FileScanner {
         
         // Remove duplicates and very short terms
         let uniqueTerms = Array(Set(terms)).filter { $0.count > 2 }
-        
-        print("Search terms for \(app.name): \(uniqueTerms)")
-        
         return uniqueTerms
     }
     
