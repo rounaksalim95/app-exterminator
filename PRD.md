@@ -37,23 +37,20 @@ A drag-and-drop interface that:
 | Minimum Version | macOS 13.0 (Ventura) |
 | Architecture | Universal (Apple Silicon + Intel) |
 | UI Framework | SwiftUI |
-| Distribution | App Store + Direct Download |
+| Distribution | Direct Download (non-sandboxed) |
 
 ---
 
 ## Distribution Strategy
 
-### Direct Download Version (Primary)
+### Direct Download Version
 - **Non-sandboxed** for full file system access
-- Can delete files in all system directories
+- Can delete files in all user and system directories
+- Signed with Developer ID certificate
 - Notarized for Gatekeeper approval
 - Full functionality
 
-### App Store Version
-- **Sandboxed** (App Store requirement)
-- Limited file system access
-- May require a privileged helper tool for full functionality
-- Consider whether reduced functionality is acceptable or if a helper is needed
+*Note: App Store distribution is not supported because sandboxing prevents access to user Library directories, which is required for the core functionality of this app.*
 
 ---
 

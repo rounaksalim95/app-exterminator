@@ -387,30 +387,26 @@ This document breaks down the implementation into logical milestones. Each miles
 ### Tasks
 
 - [ ] **13.1** Direct Download version
+  - Disable App Sandbox in Xcode
   - Build with hardened runtime
-  - Sign with Developer ID
+  - Sign with Developer ID certificate
   - Notarize with Apple
   - Create DMG installer
   - Host on website/GitHub
 
-- [ ] **13.2** App Store version (optional)
-  - Add sandboxing entitlements
-  - Evaluate functionality limitations
-  - Create App Store screenshots
-  - Write App Store description
-  - Submit for review
-
-- [ ] **13.3** Documentation
+- [ ] **13.2** Documentation
   - README.md with usage instructions
   - FAQ for common issues
   - Privacy policy (if distributing publicly)
 
-- [ ] **13.4** Release
+- [ ] **13.3** Release
   - Create GitHub release
   - Version tagging
   - Release notes
 
 **Deliverable**: Published application ready for users.
+
+*Note: App Store distribution is not supported. Sandboxing prevents access to ~/Library directories, which is required for the core functionality of this app.*
 
 ---
 

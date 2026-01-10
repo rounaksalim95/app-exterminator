@@ -27,6 +27,73 @@ struct FileScannerTests {
         #expect(result.totalSize == 3500)
     }
     
+    @Test func scannerFindsPreferencePlistByBundleID() async {
+        let prefsDir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Preferences")
+        let testPlistURL = prefsDir.appendingPathComponent("com.testcompany.scannertest.plist")
+        
+        let plistData: [String: Any] = ["testKey": "testValue"]
+        (plistData as NSDictionary).write(to: testPlistURL, atomically: true)
+        
+        defer { try? FileManager.default.removeItem(at: testPlistURL) }
+        
+        let app = TargetApplication(
+            url: URL(fileURLWithPath: "/Applications/ScannerTest.app"),
+            name: "Scanner Test",
+            bundleID: "com.testcompany.scannertest"
+        )
+        
+        let scanner = FileScanner()
+        let result = await scanner.scan(app: app)
+        
+        let prefFiles = result.discoveredFiles.filter { $0.category == .preferences }
+        #expect(prefFiles.contains { $0.url.lastPathComponent == "com.testcompany.scannertest.plist" })
+    }
+    
+    @Test func scannerFindsContainerByBundleID() async {
+        let containersDir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Containers")
+        let testContainerDir = containersDir.appendingPathComponent("com.testcompany.containertest")
+        
+        try? FileManager.default.createDirectory(at: testContainerDir, withIntermediateDirectories: true)
+        
+        defer { try? FileManager.default.removeItem(at: testContainerDir) }
+        
+        let app = TargetApplication(
+            url: URL(fileURLWithPath: "/Applications/ContainerTest.app"),
+            name: "Container Test",
+            bundleID: "com.testcompany.containertest"
+        )
+        
+        let scanner = FileScanner()
+        let result = await scanner.scan(app: app)
+        
+        let containerFiles = result.discoveredFiles.filter { $0.category == .containers }
+        #expect(containerFiles.contains { $0.url.lastPathComponent == "com.testcompany.containertest" })
+    }
+    
+    @Test func scannerFindsSavedStateByBundleID() async {
+        let savedStateDir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Saved Application State")
+        let testStateDir = savedStateDir.appendingPathComponent("com.testcompany.statetest.savedState")
+        
+        try? FileManager.default.createDirectory(at: testStateDir, withIntermediateDirectories: true)
+        
+        defer { try? FileManager.default.removeItem(at: testStateDir) }
+        
+        let app = TargetApplication(
+            url: URL(fileURLWithPath: "/Applications/StateTest.app"),
+            name: "State Test",
+            bundleID: "com.testcompany.statetest"
+        )
+        
+        let scanner = FileScanner()
+        let result = await scanner.scan(app: app)
+        
+        let stateFiles = result.discoveredFiles.filter { $0.category == .savedState }
+        #expect(stateFiles.contains { $0.url.lastPathComponent == "com.testcompany.statetest.savedState" })
+    }
+    
     @Test func scanResultGroupsFilesByCategory() {
         let app = TargetApplication(
             url: URL(fileURLWithPath: "/Applications/Test.app"),

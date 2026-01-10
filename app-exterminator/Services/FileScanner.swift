@@ -15,87 +15,32 @@ struct ScanResult {
     }
 }
 
-actor FileScanner {
+struct FileScanner {
     
     private struct ScanDirectory {
-        let url: URL
+        let path: String
         let category: FileCategory
         let requiresAdmin: Bool
-        
-        init(_ path: String, category: FileCategory, requiresAdmin: Bool = false) {
-            self.url = URL(fileURLWithPath: path)
-            self.category = category
-            self.requiresAdmin = requiresAdmin
-        }
-        
-        init(url: URL, category: FileCategory, requiresAdmin: Bool = false) {
-            self.url = url
-            self.category = category
-            self.requiresAdmin = requiresAdmin
-        }
-    }
-    
-    private let fileManager = FileManager.default
-    
-    private var userLibrary: URL {
-        fileManager.homeDirectoryForCurrentUser.appendingPathComponent("Library")
-    }
-    
-    private var systemLibrary: URL {
-        URL(fileURLWithPath: "/Library")
-    }
-    
-    private var userDirectories: [ScanDirectory] {
-        [
-            ScanDirectory(url: userLibrary.appendingPathComponent("Application Support"), category: .applicationSupport),
-            ScanDirectory(url: userLibrary.appendingPathComponent("Caches"), category: .caches),
-            ScanDirectory(url: userLibrary.appendingPathComponent("Preferences"), category: .preferences),
-            ScanDirectory(url: userLibrary.appendingPathComponent("Logs"), category: .logs),
-            ScanDirectory(url: userLibrary.appendingPathComponent("Containers"), category: .containers),
-            ScanDirectory(url: userLibrary.appendingPathComponent("Group Containers"), category: .containers),
-            ScanDirectory(url: userLibrary.appendingPathComponent("Saved Application State"), category: .savedState),
-            ScanDirectory(url: userLibrary.appendingPathComponent("HTTPStorages"), category: .caches),
-            ScanDirectory(url: userLibrary.appendingPathComponent("WebKit"), category: .webKit),
-            ScanDirectory(url: userLibrary.appendingPathComponent("Cookies"), category: .cookies),
-            ScanDirectory(url: userLibrary.appendingPathComponent("LaunchAgents"), category: .launchAgents),
-        ]
-    }
-    
-    private var systemDirectories: [ScanDirectory] {
-        [
-            ScanDirectory(url: systemLibrary.appendingPathComponent("Application Support"), category: .applicationSupport, requiresAdmin: true),
-            ScanDirectory(url: systemLibrary.appendingPathComponent("Caches"), category: .caches, requiresAdmin: true),
-            ScanDirectory(url: systemLibrary.appendingPathComponent("Preferences"), category: .preferences, requiresAdmin: true),
-            ScanDirectory(url: systemLibrary.appendingPathComponent("LaunchAgents"), category: .launchAgents, requiresAdmin: true),
-            ScanDirectory(url: systemLibrary.appendingPathComponent("LaunchDaemons"), category: .launchDaemons, requiresAdmin: true),
-            ScanDirectory(url: systemLibrary.appendingPathComponent("PrivilegedHelperTools"), category: .other, requiresAdmin: true),
-        ]
-    }
-    
-    private var extensionDirectories: [ScanDirectory] {
-        [
-            ScanDirectory("/Library/Extensions", category: .extensions, requiresAdmin: true),
-            ScanDirectory("/Library/SystemExtensions", category: .extensions, requiresAdmin: true),
-            ScanDirectory(url: userLibrary.appendingPathComponent("Safari/Extensions"), category: .extensions),
-        ]
     }
     
     func scan(app: TargetApplication) async -> ScanResult {
         let startTime = Date()
         var discoveredFiles: [DiscoveredFile] = []
+        let fileManager = FileManager.default
         
         let appFile = DiscoveredFile(
             url: app.url,
             category: .application,
-            size: calculateSize(at: app.url),
+            size: calculateSize(at: app.url, fileManager: fileManager),
             requiresAdmin: !fileManager.isWritableFile(atPath: app.url.path)
         )
         discoveredFiles.append(appFile)
         
-        let allDirectories = userDirectories + systemDirectories + extensionDirectories
+        let searchTerms = buildSearchTerms(for: app)
+        let directories = getAllDirectories()
         
-        for directory in allDirectories {
-            let files = scanDirectory(directory, for: app)
+        for directory in directories {
+            let files = scanDirectory(directory, searchTerms: searchTerms, fileManager: fileManager)
             discoveredFiles.append(contentsOf: files)
         }
         
@@ -110,25 +55,66 @@ actor FileScanner {
         )
     }
     
-    private func scanDirectory(_ directory: ScanDirectory, for app: TargetApplication) -> [DiscoveredFile] {
+    private func getAllDirectories() -> [ScanDirectory] {
+        let home = NSHomeDirectory()
+        let userLibrary = "\(home)/Library"
+        
+        var directories: [ScanDirectory] = []
+        
+        // User directories
+        directories.append(ScanDirectory(path: "\(userLibrary)/Application Support", category: .applicationSupport, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/Caches", category: .caches, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/Preferences", category: .preferences, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/Logs", category: .logs, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/Containers", category: .containers, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/Group Containers", category: .containers, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/Saved Application State", category: .savedState, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/HTTPStorages", category: .caches, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/WebKit", category: .webKit, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/Cookies", category: .cookies, requiresAdmin: false))
+        directories.append(ScanDirectory(path: "\(userLibrary)/LaunchAgents", category: .launchAgents, requiresAdmin: false))
+        
+        // System directories
+        directories.append(ScanDirectory(path: "/Library/Application Support", category: .applicationSupport, requiresAdmin: true))
+        directories.append(ScanDirectory(path: "/Library/Caches", category: .caches, requiresAdmin: true))
+        directories.append(ScanDirectory(path: "/Library/Preferences", category: .preferences, requiresAdmin: true))
+        directories.append(ScanDirectory(path: "/Library/LaunchAgents", category: .launchAgents, requiresAdmin: true))
+        directories.append(ScanDirectory(path: "/Library/LaunchDaemons", category: .launchDaemons, requiresAdmin: true))
+        directories.append(ScanDirectory(path: "/Library/PrivilegedHelperTools", category: .other, requiresAdmin: true))
+        
+        // Extension directories
+        directories.append(ScanDirectory(path: "/Library/Extensions", category: .extensions, requiresAdmin: true))
+        directories.append(ScanDirectory(path: "/Library/SystemExtensions", category: .extensions, requiresAdmin: true))
+        directories.append(ScanDirectory(path: "\(userLibrary)/Safari/Extensions", category: .extensions, requiresAdmin: false))
+        
+        return directories
+    }
+    
+    private func scanDirectory(_ directory: ScanDirectory, searchTerms: [String], fileManager: FileManager) -> [DiscoveredFile] {
         var results: [DiscoveredFile] = []
         
-        guard fileManager.fileExists(atPath: directory.url.path) else {
+        print("Scanning directory: \(directory.path)")
+        
+        guard fileManager.fileExists(atPath: directory.path) else {
+            print("  Directory does not exist: \(directory.path)")
             return results
         }
         
-        let searchTerms = buildSearchTerms(for: app)
+        let directoryURL = URL(fileURLWithPath: directory.path)
         
         do {
             let contents = try fileManager.contentsOfDirectory(
-                at: directory.url,
-                includingPropertiesForKeys: [.isDirectoryKey, .totalFileSizeKey, .totalFileAllocatedSizeKey],
-                options: [.skipsHiddenFiles]
+                at: directoryURL,
+                includingPropertiesForKeys: [.isDirectoryKey],
+                options: []
             )
             
+            print("  Found \(contents.count) items in \(directory.path)")
+            
             for itemURL in contents {
-                if matchesApp(itemURL: itemURL, searchTerms: searchTerms) {
-                    let size = calculateSize(at: itemURL)
+                if matchesSearchTerms(itemURL: itemURL, searchTerms: searchTerms) {
+                    print("  MATCH: \(itemURL.lastPathComponent)")
+                    let size = calculateSize(at: itemURL, fileManager: fileManager)
                     let requiresAdmin = directory.requiresAdmin || !fileManager.isWritableFile(atPath: itemURL.path)
                     
                     let file = DiscoveredFile(
@@ -140,8 +126,10 @@ actor FileScanner {
                     results.append(file)
                 }
             }
+            
+            print("  Matched \(results.count) files in \(directory.path)")
         } catch {
-            // Directory not accessible, skip silently
+            print("Error scanning \(directory.path): \(error.localizedDescription)")
         }
         
         return results
@@ -150,43 +138,101 @@ actor FileScanner {
     private func buildSearchTerms(for app: TargetApplication) -> [String] {
         var terms: [String] = []
         
-        terms.append(app.bundleID.lowercased())
+        // Full bundle ID (e.g., "com.openai.chat")
+        let bundleIDLower = app.bundleID.lowercased()
+        terms.append(bundleIDLower)
         
+        // Bundle ID components
         let bundleComponents = app.bundleID.components(separatedBy: ".")
+        
+        // Last component of bundle ID (e.g., "chat" from "com.openai.chat")
+        if let lastComponent = bundleComponents.last, lastComponent.count > 2 {
+            terms.append(lastComponent.lowercased())
+        }
+        
+        // Last two components (e.g., "openai.chat")
         if bundleComponents.count >= 2 {
             let lastTwo = bundleComponents.suffix(2).joined(separator: ".")
             terms.append(lastTwo.lowercased())
         }
-        if let lastComponent = bundleComponents.last {
-            terms.append(lastComponent.lowercased())
+        
+        // Organization/company name (second component, e.g., "openai")
+        if bundleComponents.count >= 2 {
+            let org = bundleComponents[1]
+            if org.count > 3 && org.lowercased() != "apple" {
+                terms.append(org.lowercased())
+            }
         }
         
+        // App name variations
         let appNameLower = app.name.lowercased()
         terms.append(appNameLower)
         
+        // App name without spaces
         let appNameNoSpaces = appNameLower.replacingOccurrences(of: " ", with: "")
         if appNameNoSpaces != appNameLower {
             terms.append(appNameNoSpaces)
         }
         
+        // App name with dashes
         let appNameDashes = appNameLower.replacingOccurrences(of: " ", with: "-")
         if appNameDashes != appNameLower {
             terms.append(appNameDashes)
         }
         
-        return Array(Set(terms))
+        // App name with underscores
+        let appNameUnderscores = appNameLower.replacingOccurrences(of: " ", with: "_")
+        if appNameUnderscores != appNameLower {
+            terms.append(appNameUnderscores)
+        }
+        
+        // First word of app name if multi-word
+        let appNameWords = app.name.components(separatedBy: " ")
+        if appNameWords.count > 1, let firstWord = appNameWords.first, firstWord.count > 3 {
+            terms.append(firstWord.lowercased())
+        }
+        
+        // App bundle filename (without .app)
+        let appFilename = app.url.deletingPathExtension().lastPathComponent.lowercased()
+        if !terms.contains(appFilename) {
+            terms.append(appFilename)
+        }
+        
+        // Remove duplicates and very short terms
+        let uniqueTerms = Array(Set(terms)).filter { $0.count > 2 }
+        
+        print("Search terms for \(app.name): \(uniqueTerms)")
+        
+        return uniqueTerms
     }
     
-    private func matchesApp(itemURL: URL, searchTerms: [String]) -> Bool {
+    private func matchesSearchTerms(itemURL: URL, searchTerms: [String]) -> Bool {
         let itemName = itemURL.lastPathComponent.lowercased()
         let itemNameWithoutExtension = itemURL.deletingPathExtension().lastPathComponent.lowercased()
         
         for term in searchTerms {
+            // Exact match
+            if itemNameWithoutExtension == term || itemName == term {
+                return true
+            }
+            
+            // Starts with term
+            if itemName.hasPrefix(term) || itemNameWithoutExtension.hasPrefix(term) {
+                return true
+            }
+            
+            // Contains term
             if itemName.contains(term) || itemNameWithoutExtension.contains(term) {
                 return true
             }
             
+            // Plist file matching
             if itemName == "\(term).plist" {
+                return true
+            }
+            
+            // Saved state matching
+            if itemName == "\(term).savedstate" {
                 return true
             }
         }
@@ -194,20 +240,20 @@ actor FileScanner {
         return false
     }
     
-    private func calculateSize(at url: URL) -> Int64 {
+    private func calculateSize(at url: URL, fileManager: FileManager) -> Int64 {
         var isDirectory: ObjCBool = false
         guard fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) else {
             return 0
         }
         
         if isDirectory.boolValue {
-            return calculateDirectorySize(at: url)
+            return calculateDirectorySize(at: url, fileManager: fileManager)
         } else {
-            return calculateFileSize(at: url)
+            return calculateFileSize(at: url, fileManager: fileManager)
         }
     }
     
-    private func calculateFileSize(at url: URL) -> Int64 {
+    private func calculateFileSize(at url: URL, fileManager: FileManager) -> Int64 {
         do {
             let attributes = try fileManager.attributesOfItem(atPath: url.path)
             return attributes[.size] as? Int64 ?? 0
@@ -216,13 +262,13 @@ actor FileScanner {
         }
     }
     
-    private func calculateDirectorySize(at url: URL) -> Int64 {
+    private func calculateDirectorySize(at url: URL, fileManager: FileManager) -> Int64 {
         var totalSize: Int64 = 0
         
         guard let enumerator = fileManager.enumerator(
             at: url,
             includingPropertiesForKeys: [.totalFileAllocatedSizeKey, .fileAllocatedSizeKey],
-            options: [.skipsHiddenFiles],
+            options: [],
             errorHandler: nil
         ) else {
             return 0
