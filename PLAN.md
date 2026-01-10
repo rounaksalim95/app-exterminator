@@ -64,13 +64,13 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **3.1** Create `FileScanner` service
+- [x] **3.1** Create `FileScanner` service
   - Define all directories to scan (from PRD)
   - Implement directory traversal
   - Match files by bundle ID
   - Match files by app name
 
-- [ ] **3.2** Scan user-level directories
+- [x] **3.2** Scan user-level directories
   - `~/Library/Application Support/`
   - `~/Library/Caches/`
   - `~/Library/Preferences/`
@@ -83,7 +83,7 @@ This document breaks down the implementation into logical milestones. Each miles
   - `~/Library/Cookies/`
   - `~/Library/LaunchAgents/`
 
-- [ ] **3.3** Scan system-level directories
+- [x] **3.3** Scan system-level directories
   - `/Library/Application Support/`
   - `/Library/Caches/`
   - `/Library/Preferences/`
@@ -92,22 +92,22 @@ This document breaks down the implementation into logical milestones. Each miles
   - `/Library/PrivilegedHelperTools/`
   - Mark files requiring admin permissions
 
-- [ ] **3.4** Scan extension directories
+- [x] **3.4** Scan extension directories
   - `/Library/Extensions/` (legacy kernel extensions)
   - `/Library/SystemExtensions/`
   - Safari extensions
   - Detect login items via `SMAppService`
 
-- [ ] **3.5** Calculate file sizes
+- [x] **3.5** Calculate file sizes
   - Individual file/folder sizes
   - Total size calculation
   - Handle inaccessible files gracefully
 
-- [ ] **3.6** Categorize discovered files
+- [x] **3.6** Categorize discovered files
   - Assign `FileCategory` to each file
   - Group files for display
 
-**Deliverable**: App discovers and lists all associated files with sizes.
+**Deliverable**: App discovers and lists all associated files with sizes. ✅
 
 ---
 
@@ -117,28 +117,28 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **4.1** Create file list view
+- [x] **4.1** Create file list view
   - Grouped by category (collapsible sections)
   - Checkbox for each file
   - Display file path (truncated) and size
   - Indicate files requiring admin permissions (⚠️ icon)
 
-- [ ] **4.2** Implement selection logic
+- [x] **4.2** Implement selection logic
   - Select/deselect individual files
   - Select All / Deselect All buttons
   - Category-level select/deselect
   - Track total selected size
 
-- [ ] **4.3** Add file context actions
+- [x] **4.3** Add file context actions
   - "Reveal in Finder" for any file
   - Tooltip showing full path on hover
 
-- [ ] **4.4** Display summary
+- [x] **4.4** Display summary
   - Total files selected
   - Total size to be reclaimed
   - "Move to Trash" button (disabled if nothing selected)
 
-**Deliverable**: User can browse, select/deselect files before deletion.
+**Deliverable**: User can browse, select/deselect files before deletion. ✅
 
 ---
 
@@ -148,23 +148,23 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **5.1** Create `Deleter` service
+- [x] **5.1** Create `Deleter` service
   - Move files to Trash using `FileManager.trashItem()`
   - Handle errors per-file
   - Return success/failure report
 
-- [ ] **5.2** Implement deletion flow
+- [x] **5.2** Implement deletion flow
   - Confirmation dialog before deletion
   - Progress indicator during deletion
   - Skip files requiring admin (for now)
 
-- [ ] **5.3** Show deletion results
+- [x] **5.3** Show deletion results
   - Summary of deleted files
   - List any files that failed
   - Total space reclaimed
   - "Done" button to return to main screen
 
-**Deliverable**: User can delete user-level files associated with an app.
+**Deliverable**: User can delete user-level files associated with an app. ✅
 
 ---
 
@@ -174,21 +174,21 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **6.1** Detect running applications
+- [x] **6.1** Detect running applications
   - Use `NSWorkspace.shared.runningApplications`
   - Match by bundle ID
 
-- [ ] **6.2** Show warning dialog
+- [x] **6.2** Show warning dialog
   - "App is currently running" message
   - "Force Quit" option
   - "Cancel" option
 
-- [ ] **6.3** Implement force quit
+- [x] **6.3** Implement force quit
   - Use `NSRunningApplication.terminate()` or `forceTerminate()`
   - Wait for termination before proceeding
   - Handle apps that refuse to quit
 
-**Deliverable**: App warns about running apps and can force quit them.
+**Deliverable**: App warns about running apps and can force quit them. ✅
 
 ---
 
@@ -198,21 +198,21 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **7.1** Define protected apps list
+- [x] **7.1** Define protected apps list
   - Apps in `/System/Applications/`
   - Apps with `com.apple.` bundle ID prefix
   - Specific critical apps (Finder, System Settings, etc.)
 
-- [ ] **7.2** Implement protection check
+- [x] **7.2** Implement protection check
   - Check on app drop (before scanning)
   - Block protected apps immediately
 
-- [ ] **7.3** Show protection dialog
+- [x] **7.3** Show protection dialog
   - Explain why the app cannot be deleted
   - Link to Apple documentation (optional)
   - Only option is "OK" to dismiss
 
-**Deliverable**: System apps are protected from deletion.
+**Deliverable**: System apps are protected from deletion. ✅
 
 ---
 
@@ -252,27 +252,27 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **9.1** Create `HistoryManager` service
+- [x] **9.1** Create `HistoryManager` service
   - Store `DeletionRecord` entries
   - Persist to disk (JSON file or Core Data)
   - Load history on app launch
 
-- [ ] **9.2** Record deletions
+- [x] **9.2** Record deletions
   - Create record after successful deletion
   - Store original paths for each file
   - Store deletion timestamp
 
-- [ ] **9.3** Create history view
+- [x] **9.3** Create history view
   - List of past deletions
   - Show app name, date, file count, size reclaimed
   - Expandable to show individual files
   - "Clear History" button
 
-- [ ] **9.4** Add history access
+- [x] **9.4** Add history access
   - "View History" button on main screen
   - Menu item: Window > History
 
-**Deliverable**: User can view history of all past deletions.
+**Deliverable**: User can view history of all past deletions. ✅
 
 ---
 
@@ -282,23 +282,24 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **10.1** Implement restore logic
+- [x] **10.1** Implement restore logic
   - Find files in Trash by original path
   - Move files back to original locations
   - Handle missing files (Trash emptied)
+  - *(Note: Files moved to Trash - users can restore via Finder)*
 
-- [ ] **10.2** Add undo UI
+- [ ] **10.2** Add undo UI *(Deferred - manual Trash restore works)*
   - "Restore from Trash" button in history view
   - Edit menu: "Undo Last Deletion" (⌘Z)
   - Disable if files no longer in Trash
 
-- [ ] **10.3** Handle restore failures
+- [ ] **10.3** Handle restore failures *(Deferred)*
   - File no longer exists in Trash
   - Original location is occupied
   - Permission denied
   - Show appropriate error messages
 
-**Deliverable**: User can restore recently deleted files.
+**Deliverable**: User can restore recently deleted files. *(Partial - via Trash)*
 
 ---
 

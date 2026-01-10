@@ -1,10 +1,34 @@
 import SwiftUI
 
-enum AppState {
+enum AppState: Equatable {
     case dropZone
     case appInfo(TargetApplication)
     case scanning(TargetApplication)
+    case results(ScanResult)
+    case confirmDelete(ScanResult, [DiscoveredFile])
+    case deleting(TargetApplication, [DiscoveredFile])
+    case deletionComplete(TargetApplication, DeletionResult)
     case error(String)
+    
+    static func == (lhs: AppState, rhs: AppState) -> Bool {
+        switch (lhs, rhs) {
+        case (.dropZone, .dropZone):
+            return true
+        case (.appInfo(let a), .appInfo(let b)):
+            return a == b
+        case (.scanning(let a), .scanning(let b)):
+            return a == b
+        case (.error(let a), .error(let b)):
+            return a == b
+        case (.results, .results),
+             (.confirmDelete, .confirmDelete),
+             (.deleting, .deleting),
+             (.deletionComplete, .deletionComplete):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 struct MainView: View {
@@ -13,18 +37,47 @@ struct MainView: View {
     @State private var showHistory = false
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var showDeleteConfirmation = false
+    @State private var filesToDelete: [DiscoveredFile] = []
+    @State private var currentScanResult: ScanResult?
+    
+    private let fileScanner = FileScanner()
+    private let deleter = Deleter()
     
     var body: some View {
         VStack(spacing: 0) {
             content
         }
-        .frame(minWidth: 500, minHeight: 400)
+        .frame(minWidth: 550, minHeight: 450)
         .alert("Error", isPresented: $showError) {
             Button("OK") {
                 showError = false
             }
         } message: {
             Text(errorMessage)
+        }
+        .confirmationDialog(
+            "Move to Trash?",
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Move \(filesToDelete.count) items to Trash", role: .destructive) {
+                if let result = currentScanResult {
+                    appState = .deleting(result.app, filesToDelete)
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                showDeleteConfirmation = false
+            }
+        } message: {
+            let size = ByteCountFormatter.string(
+                fromByteCount: filesToDelete.reduce(0) { $0 + $1.size },
+                countStyle: .file
+            )
+            Text("This will move \(filesToDelete.count) files (\(size)) to Trash. You can restore them from Trash if needed.")
+        }
+        .sheet(isPresented: $showHistory) {
+            HistoryView()
         }
     }
     
@@ -41,12 +94,40 @@ struct MainView: View {
                     appState = .dropZone
                 },
                 onContinue: {
-                    appState = .scanning(app)
+                    startScanning(app: app)
                 }
             )
             
         case .scanning(let app):
-            scanningPlaceholder(for: app)
+            scanningView(for: app)
+            
+        case .results(let scanResult):
+            ScanResultsView(
+                scanResult: scanResult,
+                onCancel: {
+                    appState = .dropZone
+                },
+                onDelete: { selectedFiles in
+                    filesToDelete = selectedFiles
+                    currentScanResult = scanResult
+                    showDeleteConfirmation = true
+                }
+            )
+            
+        case .confirmDelete:
+            EmptyView()
+            
+        case .deleting(let app, let files):
+            deletingView(app: app, files: files)
+            
+        case .deletionComplete(let app, let result):
+            DeletionResultView(
+                app: app,
+                result: result,
+                onDone: {
+                    appState = .dropZone
+                }
+            )
             
         case .error(let message):
             errorView(message: message)
@@ -69,7 +150,7 @@ struct MainView: View {
         }
     }
     
-    private func scanningPlaceholder(for app: TargetApplication) -> some View {
+    private func scanningView(for app: TargetApplication) -> some View {
         VStack(spacing: 20) {
             ProgressView()
                 .scaleEffect(1.5)
@@ -79,14 +160,35 @@ struct MainView: View {
             
             Text("Looking for files associated with \(app.name)")
                 .foregroundColor(.secondary)
-            
-            Button("Cancel") {
-                appState = .dropZone
-            }
-            .buttonStyle(.bordered)
-            .padding(.top, 20)
         }
         .padding()
+        .task {
+            let result = await fileScanner.scan(app: app)
+            appState = .results(result)
+        }
+    }
+    
+    private func deletingView(app: TargetApplication, files: [DiscoveredFile]) -> some View {
+        VStack(spacing: 20) {
+            ProgressView()
+                .scaleEffect(1.5)
+            
+            Text("Moving files to Trash...")
+                .font(.headline)
+            
+            Text("Deleting \(files.count) files")
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .task {
+            let result = await deleter.delete(files: files)
+            
+            if !result.successfulDeletions.isEmpty {
+                _ = await HistoryManager.shared.createRecord(from: app, deletionResult: result)
+            }
+            
+            appState = .deletionComplete(app, result)
+        }
     }
     
     private func errorView(message: String) -> some View {
@@ -120,13 +222,12 @@ struct MainView: View {
             showError = true
         }
     }
+    
+    private func startScanning(app: TargetApplication) {
+        appState = .scanning(app)
+    }
 }
 
 #Preview("Drop Zone") {
     MainView()
-}
-
-#Preview("App Info") {
-    let view = MainView()
-    return view
 }
