@@ -283,23 +283,25 @@ This document breaks down the implementation into logical milestones. Each miles
 ### Tasks
 
 - [x] **10.1** Implement restore logic
-  - Find files in Trash by original path
+  - Find files in Trash by original path (handles renamed files)
   - Move files back to original locations
   - Handle missing files (Trash emptied)
-  - *(Note: Files moved to Trash - users can restore via Finder)*
+  - Create parent directories if missing
 
-- [ ] **10.2** Add undo UI *(Deferred - manual Trash restore works)*
-  - "Restore from Trash" button in history view
-  - Edit menu: "Undo Last Deletion" (⌘Z)
-  - Disable if files no longer in Trash
+- [x] **10.2** Add undo UI
+  - "Restore from Trash" button in history detail view
+  - Confirmation dialog before restore
+  - Disable button if files no longer in Trash
+  - Show restore results with success/failure details
 
-- [ ] **10.3** Handle restore failures *(Deferred)*
+- [x] **10.3** Handle restore failures
   - File no longer exists in Trash
   - Original location is occupied
   - Permission denied
+  - Parent directory missing (auto-create)
   - Show appropriate error messages
 
-**Deliverable**: User can restore recently deleted files. *(Partial - via Trash)*
+**Deliverable**: User can restore recently deleted files. ✅
 
 ---
 

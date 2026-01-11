@@ -92,7 +92,7 @@ struct DeleterTests {
         #expect(!FileManager.default.fileExists(atPath: testFile.path))
     }
     
-    @Test func skipsAdminFilesWhenRequested() async {
+    @Test func skipsAdminFilesByDefault() async {
         let adminFile = DiscoveredFile(
             url: URL(fileURLWithPath: "/Library/LaunchDaemons/fake.plist"),
             category: .launchDaemons,
@@ -101,7 +101,7 @@ struct DeleterTests {
         )
         
         let deleter = Deleter()
-        let result = await deleter.delete(files: [adminFile], skipAdminFiles: true)
+        let result = await deleter.delete(files: [adminFile], includeAdminFiles: false)
         
         #expect(result.totalDeleted == 0)
         #expect(result.totalSkipped == 1)

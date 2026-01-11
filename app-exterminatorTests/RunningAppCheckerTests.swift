@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import AppKit
 @testable import app_exterminator
 
 struct RunningAppCheckerTests {
