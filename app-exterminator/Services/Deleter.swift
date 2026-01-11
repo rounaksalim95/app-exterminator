@@ -28,32 +28,53 @@ struct DeletionResult {
     var isComplete: Bool {
         failedDeletions.isEmpty && skippedAdminFiles.isEmpty
     }
+    
+    func combined(with other: DeletionResult) -> DeletionResult {
+        DeletionResult(
+            successfulDeletions: successfulDeletions + other.successfulDeletions,
+            failedDeletions: failedDeletions + other.failedDeletions,
+            skippedAdminFiles: skippedAdminFiles + other.skippedAdminFiles
+        )
+    }
 }
 
 actor Deleter {
     
     private let fileManager = FileManager.default
+    private let privilegedDeleter = PrivilegedDeleter()
     
     func delete(
         files: [DiscoveredFile],
-        skipAdminFiles: Bool = true
+        includeAdminFiles: Bool = false
     ) async -> DeletionResult {
+        let userFiles = files.filter { !$0.requiresAdmin }
+        let adminFiles = files.filter { $0.requiresAdmin }
+        
         var successfulDeletions: [DiscoveredFile] = []
         var failedDeletions: [(file: DiscoveredFile, error: Error)] = []
         var skippedAdminFiles: [DiscoveredFile] = []
         
-        for file in files {
-            if file.requiresAdmin && skipAdminFiles {
-                skippedAdminFiles.append(file)
-                continue
-            }
-            
+        for file in userFiles {
             do {
                 try await trashFile(file)
                 successfulDeletions.append(file)
             } catch {
                 failedDeletions.append((file: file, error: error))
             }
+        }
+        
+        if includeAdminFiles && !adminFiles.isEmpty {
+            do {
+                let privilegedResult = try await privilegedDeleter.deleteWithPrivileges(files: adminFiles)
+                successfulDeletions.append(contentsOf: privilegedResult.successfulDeletions)
+                failedDeletions.append(contentsOf: privilegedResult.failedDeletions)
+            } catch {
+                for file in adminFiles {
+                    failedDeletions.append((file: file, error: error))
+                }
+            }
+        } else {
+            skippedAdminFiles = adminFiles
         }
         
         return DeletionResult(

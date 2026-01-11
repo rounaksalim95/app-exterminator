@@ -222,27 +222,27 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **8.1** Identify admin-required files
+- [x] **8.1** Identify admin-required files
   - Files in `/Library/` directories
   - Files owned by root
   - Files without write permission
 
-- [ ] **8.2** Implement privilege escalation
+- [x] **8.2** Implement privilege escalation
   - Use `AuthorizationServices` framework
-  - Request `kAuthorizationRightExecute`
+  - Use AppleScript with administrator privileges
   - Show system password prompt
 
-- [ ] **8.3** Create privileged helper
-  - Helper tool for privileged file operations
-  - Communicate via XPC (optional) or direct execution
-  - Sign helper with appropriate entitlements
+- [x] **8.3** Create privileged deleter
+  - `PrivilegedDeleter` service for privileged file operations
+  - Uses AppleScript `do shell script ... with administrator privileges`
+  - Moves files to Trash with admin permissions
 
-- [ ] **8.4** Integrate into deletion flow
+- [x] **8.4** Integrate into deletion flow
   - Separate user-level and admin-level deletions
   - Only prompt for admin if admin files are selected
-  - Handle authentication failure gracefully
+  - Handle authentication failure/cancellation gracefully
 
-**Deliverable**: User can delete system-level files with admin password.
+**Deliverable**: User can delete system-level files with admin password. ✅
 
 ---
 
