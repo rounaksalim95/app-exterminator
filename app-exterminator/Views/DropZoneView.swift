@@ -34,6 +34,9 @@ struct DropZoneView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(40)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Drop zone for applications")
+            .accessibilityHint("Drag an application here to uninstall it, or press Command+O to open a file picker")
         }
         .onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
             handleDrop(providers: providers)

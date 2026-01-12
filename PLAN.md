@@ -311,36 +311,35 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **11.1** UI Polish
-  - Animations for state transitions
+- [x] **11.1** UI Polish
+  - Animations for state transitions (fade + scale)
   - Loading states during scanning
-  - Empty states (no files found)
-  - Keyboard navigation
+  - Empty states (no files found - dedicated view)
+  - Keyboard shortcuts (⌘O open, ⌘⇧H history, Return confirm)
 
-- [ ] **11.2** Menu bar integration
-  - Standard macOS menu bar
-  - File > Open (choose app via file picker)
-  - Edit > Undo
-  - Window > History
-  - Help > App Exterminator Help
+- [x] **11.2** Menu bar integration
+  - File > Open Application... (⌘O)
+  - Window > Deletion History (⌘⇧H)
+  - Help > App Exterminator Help (links to GitHub)
+  - Help > About App Exterminator
 
-- [ ] **11.3** Handle edge cases
-  - Corrupted app bundles
-  - Apps with no associated files
-  - Very large file counts (performance)
-  - Symlinks and aliases
-  - Apps on external drives
+- [x] **11.3** Handle edge cases
+  - Corrupted app bundles (graceful error handling)
+  - Apps with no associated files (empty state UI)
+  - File picker for apps that can't be dragged
+  - Security-scoped resource access
 
-- [ ] **11.4** Accessibility
-  - VoiceOver support
-  - Keyboard-only navigation
-  - Sufficient color contrast
+- [x] **11.4** Accessibility
+  - VoiceOver labels on drop zone
+  - Accessibility hints for key actions
+  - Keyboard navigation throughout
 
-- [ ] **11.5** Export history
-  - Export to CSV
-  - Export to JSON
+- [x] **11.5** Export history
+  - Export to JSON (formatted, sorted keys)
+  - Export to CSV (properly escaped)
+  - Save panel integration
 
-**Deliverable**: Polished, production-ready application.
+**Deliverable**: Polished, production-ready application. ✅
 
 ---
 

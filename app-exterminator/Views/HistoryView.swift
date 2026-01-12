@@ -1,10 +1,14 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct HistoryView: View {
     @State private var records: [DeletionRecord] = []
     @State private var isLoading = true
     @State private var showClearConfirmation = false
     @State private var selectedRecord: DeletionRecord?
+    @State private var showExportOptions = false
+    @State private var exportError: String?
+    @State private var showExportError = false
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -46,6 +50,26 @@ struct HistoryView: View {
         }
         .sheet(item: $selectedRecord) { record in
             HistoryDetailView(record: record)
+        }
+        .confirmationDialog(
+            "Export Format",
+            isPresented: $showExportOptions,
+            titleVisibility: .visible
+        ) {
+            Button("Export as JSON") {
+                exportHistory(format: .json)
+            }
+            Button("Export as CSV") {
+                exportHistory(format: .csv)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Choose the format for exporting your deletion history.")
+        }
+        .alert("Export Failed", isPresented: $showExportError) {
+            Button("OK") {}
+        } message: {
+            Text(exportError ?? "An unknown error occurred.")
         }
     }
     
@@ -112,6 +136,11 @@ struct HistoryView: View {
             }
             .disabled(records.isEmpty)
             
+            Button("Export...") {
+                showExportOptions = true
+            }
+            .disabled(records.isEmpty)
+            
             Spacer()
             
             Button("Done") {
@@ -127,6 +156,79 @@ struct HistoryView: View {
         await HistoryManager.shared.load()
         records = await HistoryManager.shared.getAllRecords()
         isLoading = false
+    }
+    
+    private enum ExportFormat {
+        case json, csv
+        
+        var fileExtension: String {
+            switch self {
+            case .json: return "json"
+            case .csv: return "csv"
+            }
+        }
+    }
+    
+    private func exportHistory(format: ExportFormat) {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = format == .json ? [.json] : [.commaSeparatedText]
+        panel.nameFieldStringValue = "deletion_history.\(format.fileExtension)"
+        panel.canCreateDirectories = true
+        
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            
+            do {
+                let data: Data
+                switch format {
+                case .json:
+                    data = try exportAsJSON()
+                case .csv:
+                    data = try exportAsCSV()
+                }
+                try data.write(to: url)
+            } catch {
+                exportError = error.localizedDescription
+                showExportError = true
+            }
+        }
+    }
+    
+    private func exportAsJSON() throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return try encoder.encode(records)
+    }
+    
+    private func exportAsCSV() throws -> Data {
+        var csv = "App Name,Bundle ID,Date,Files Deleted,Size Reclaimed (bytes),Size Reclaimed\n"
+        
+        let dateFormatter = ISO8601DateFormatter()
+        
+        for record in records {
+            let row = [
+                escapeCSV(record.appName),
+                escapeCSV(record.bundleID),
+                escapeCSV(dateFormatter.string(from: record.date)),
+                "\(record.fileCount)",
+                "\(record.totalSizeReclaimed)",
+                escapeCSV(record.formattedTotalSize)
+            ].joined(separator: ",")
+            csv += row + "\n"
+        }
+        
+        guard let data = csv.data(using: .utf8) else {
+            throw NSError(domain: "HistoryExport", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode CSV data"])
+        }
+        return data
+    }
+    
+    private func escapeCSV(_ string: String) -> String {
+        if string.contains(",") || string.contains("\"") || string.contains("\n") {
+            return "\"\(string.replacingOccurrences(of: "\"", with: "\"\""))\""
+        }
+        return string
     }
 }
 

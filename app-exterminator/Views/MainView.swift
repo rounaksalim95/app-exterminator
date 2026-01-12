@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 enum AppState: Equatable {
     case dropZone
@@ -42,6 +43,7 @@ struct MainView: View {
     @State private var filesToDelete: [DiscoveredFile] = []
     @State private var includeAdminFiles = false
     @State private var currentScanResult: ScanResult?
+    @State private var showFilePicker = false
     
     private let fileScanner = FileScanner()
     private let deleter = Deleter()
@@ -121,59 +123,87 @@ struct MainView: View {
         .sheet(isPresented: $showHistory) {
             HistoryView()
         }
+        .fileImporter(
+            isPresented: $showFilePicker,
+            allowedContentTypes: [.application],
+            allowsMultipleSelection: false
+        ) { result in
+            handleFilePickerResult(result)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .openApp)) { _ in
+            showFilePicker = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .showHistory)) { _ in
+            showHistory = true
+        }
     }
     
     @ViewBuilder
     private var content: some View {
-        switch appState {
-        case .dropZone:
-            dropZoneContent
-            
-        case .appInfo(let app):
-            AppInfoView(
-                app: app,
-                onCancel: {
-                    appState = .dropZone
-                },
-                onContinue: {
-                    startScanning(app: app)
+        Group {
+            switch appState {
+            case .dropZone:
+                dropZoneContent
+                
+            case .appInfo(let app):
+                AppInfoView(
+                    app: app,
+                    onCancel: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            appState = .dropZone
+                        }
+                    },
+                    onContinue: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            startScanning(app: app)
+                        }
+                    }
+                )
+                
+            case .scanning(let app):
+                scanningView(for: app)
+                
+            case .results(let scanResult):
+                if scanResult.discoveredFiles.isEmpty {
+                    emptyResultsView(for: scanResult.app)
+                } else {
+                    ScanResultsView(
+                        scanResult: scanResult,
+                        onCancel: {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                appState = .dropZone
+                            }
+                        },
+                        onDelete: { selectedFiles in
+                            filesToDelete = selectedFiles
+                            currentScanResult = scanResult
+                            showDeleteConfirmation = true
+                        }
+                    )
                 }
-            )
-            
-        case .scanning(let app):
-            scanningView(for: app)
-            
-        case .results(let scanResult):
-            ScanResultsView(
-                scanResult: scanResult,
-                onCancel: {
-                    appState = .dropZone
-                },
-                onDelete: { selectedFiles in
-                    filesToDelete = selectedFiles
-                    currentScanResult = scanResult
-                    showDeleteConfirmation = true
-                }
-            )
-            
-        case .confirmDelete:
-            EmptyView()
-            
-        case .deleting(let app, let files):
-            deletingView(app: app, files: files)
-            
-        case .deletionComplete(let app, let result):
-            DeletionResultView(
-                app: app,
-                result: result,
-                onDone: {
-                    appState = .dropZone
-                }
-            )
-            
-        case .error(let message):
-            errorView(message: message)
+                
+            case .confirmDelete:
+                EmptyView()
+                
+            case .deleting(let app, let files):
+                deletingView(app: app, files: files)
+                
+            case .deletionComplete(let app, let result):
+                DeletionResultView(
+                    app: app,
+                    result: result,
+                    onDone: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            appState = .dropZone
+                        }
+                    }
+                )
+                
+            case .error(let message):
+                errorView(message: message)
+            }
         }
+        .transition(.opacity.combined(with: .scale(scale: 0.98)))
     }
     
     private var dropZoneContent: some View {
@@ -252,9 +282,48 @@ struct MainView: View {
                 .multilineTextAlignment(.center)
             
             Button("Try Again") {
-                appState = .dropZone
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    appState = .dropZone
+                }
             }
             .buttonStyle(.borderedProminent)
+        }
+        .padding()
+    }
+    
+    private func emptyResultsView(for app: TargetApplication) -> some View {
+        VStack(spacing: 20) {
+            if let icon = app.icon {
+                Image(nsImage: icon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 64, height: 64)
+            } else {
+                Image(systemName: "app.fill")
+                    .font(.system(size: 64))
+                    .foregroundColor(.secondary)
+            }
+            
+            Text("No Associated Files Found")
+                .font(.headline)
+            
+            Text("\(app.name) doesn't appear to have any additional files outside of its application bundle.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 300)
+            
+            Text("The app may be self-contained or was already cleaned up.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Button("Done") {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    appState = .dropZone
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .keyboardShortcut(.return, modifiers: [])
         }
         .padding()
     }
@@ -262,7 +331,9 @@ struct MainView: View {
     private func handleDropResult(_ result: Result<TargetApplication, AppAnalyzerError>) {
         switch result {
         case .success(let app):
-            appState = .appInfo(app)
+            withAnimation(.easeInOut(duration: 0.2)) {
+                appState = .appInfo(app)
+            }
             
         case .failure(let error):
             errorMessage = error.localizedDescription
@@ -273,6 +344,32 @@ struct MainView: View {
     private func startScanning(app: TargetApplication) {
         appState = .scanning(app)
     }
+    
+    private func handleFilePickerResult(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            
+            guard url.startAccessingSecurityScopedResource() else {
+                errorMessage = "Could not access the selected application."
+                showError = true
+                return
+            }
+            defer { url.stopAccessingSecurityScopedResource() }
+            
+            let analyzeResult = AppAnalyzer.analyze(appURL: url)
+            handleDropResult(analyzeResult)
+            
+        case .failure(let error):
+            errorMessage = error.localizedDescription
+            showError = true
+        }
+    }
+}
+
+extension Notification.Name {
+    static let openApp = Notification.Name("openApp")
+    static let showHistory = Notification.Name("showHistory")
 }
 
 #Preview("Drop Zone") {
