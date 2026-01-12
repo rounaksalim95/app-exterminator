@@ -49,28 +49,28 @@ struct AppAnalyzer {
         guard appURL.pathExtension == "app" else {
             return .failure(.notAnAppBundle)
         }
-        
+
         let infoPlistURL = appURL
             .appendingPathComponent("Contents")
             .appendingPathComponent("Info.plist")
-        
+
         guard FileManager.default.fileExists(atPath: infoPlistURL.path) else {
             return .failure(.missingInfoPlist)
         }
-        
+
         guard let plistData = NSDictionary(contentsOf: infoPlistURL) else {
             return .failure(.invalidBundle)
         }
-        
+
         guard let bundleID = plistData["CFBundleIdentifier"] as? String, !bundleID.isEmpty else {
             return .failure(.missingBundleIdentifier)
         }
-        
+
         let appName = extractAppName(from: plistData, url: appURL)
         let version = extractVersion(from: plistData)
         let icon = extractIcon(from: appURL)
         let isSystemApp = checkIfSystemApp(url: appURL, bundleID: bundleID)
-        
+
         let app = TargetApplication(
             url: appURL,
             name: appName,
@@ -79,8 +79,51 @@ struct AppAnalyzer {
             icon: icon,
             isSystemApp: isSystemApp
         )
-        
+
         return .success(app)
+    }
+
+    /// Analyze app without extracting icon (faster for bulk discovery)
+    static func analyzeWithoutIcon(appURL: URL) -> Result<TargetApplication, AppAnalyzerError> {
+        guard appURL.pathExtension == "app" else {
+            return .failure(.notAnAppBundle)
+        }
+
+        let infoPlistURL = appURL
+            .appendingPathComponent("Contents")
+            .appendingPathComponent("Info.plist")
+
+        guard FileManager.default.fileExists(atPath: infoPlistURL.path) else {
+            return .failure(.missingInfoPlist)
+        }
+
+        guard let plistData = NSDictionary(contentsOf: infoPlistURL) else {
+            return .failure(.invalidBundle)
+        }
+
+        guard let bundleID = plistData["CFBundleIdentifier"] as? String, !bundleID.isEmpty else {
+            return .failure(.missingBundleIdentifier)
+        }
+
+        let appName = extractAppName(from: plistData, url: appURL)
+        let version = extractVersion(from: plistData)
+        let isSystemApp = checkIfSystemApp(url: appURL, bundleID: bundleID)
+
+        let app = TargetApplication(
+            url: appURL,
+            name: appName,
+            bundleID: bundleID,
+            version: version,
+            icon: nil,  // Defer icon loading
+            isSystemApp: isSystemApp
+        )
+
+        return .success(app)
+    }
+
+    /// Load icon for an app URL (call from UI layer for lazy loading)
+    static func loadIcon(for appURL: URL) -> NSImage? {
+        extractIcon(from: appURL)
     }
     
     static func validateNotCriticalSystemApp(_ app: TargetApplication) -> Result<Void, AppAnalyzerError> {

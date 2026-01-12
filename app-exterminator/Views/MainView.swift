@@ -3,6 +3,7 @@ import UniformTypeIdentifiers
 
 enum AppState: Equatable {
     case dropZone
+    case browseApps
     case appInfo(TargetApplication)
     case scanning(TargetApplication)
     case results(ScanResult)
@@ -10,10 +11,12 @@ enum AppState: Equatable {
     case deleting(TargetApplication, [DiscoveredFile])
     case deletionComplete(TargetApplication, DeletionResult)
     case error(String)
-    
+
     static func == (lhs: AppState, rhs: AppState) -> Bool {
         switch (lhs, rhs) {
         case (.dropZone, .dropZone):
+            return true
+        case (.browseApps, .browseApps):
             return true
         case (.appInfo(let a), .appInfo(let b)):
             return a == b
@@ -136,6 +139,11 @@ struct MainView: View {
         .onReceive(NotificationCenter.default.publisher(for: .showHistory)) { _ in
             showHistory = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: .browseApps)) { _ in
+            withAnimation(.easeInOut(duration: 0.2)) {
+                appState = .browseApps
+            }
+        }
     }
     
     @ViewBuilder
@@ -144,7 +152,21 @@ struct MainView: View {
             switch appState {
             case .dropZone:
                 dropZoneContent
-                
+
+            case .browseApps:
+                ApplicationSearchView(
+                    onCancel: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            appState = .dropZone
+                        }
+                    },
+                    onSelectApp: { app in
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            appState = .appInfo(app)
+                        }
+                    }
+                )
+
             case .appInfo(let app):
                 AppInfoView(
                     app: app,
@@ -208,10 +230,18 @@ struct MainView: View {
     
     private var dropZoneContent: some View {
         VStack(spacing: 20) {
-            DropZoneView(isTargeted: $isDropTargeted) { result in
-                handleDropResult(result)
-            }
-            
+            DropZoneView(
+                isTargeted: $isDropTargeted,
+                onAppDropped: { result in
+                    handleDropResult(result)
+                },
+                onBrowseApps: {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        appState = .browseApps
+                    }
+                }
+            )
+
             HStack {
                 Button("View History") {
                     showHistory = true
@@ -370,6 +400,7 @@ struct MainView: View {
 extension Notification.Name {
     static let openApp = Notification.Name("openApp")
     static let showHistory = Notification.Name("showHistory")
+    static let browseApps = Notification.Name("browseApps")
 }
 
 #Preview("Drop Zone") {

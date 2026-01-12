@@ -58,6 +58,48 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ---
 
+## Milestone 2b: Application Search & Browse
+
+**Goal**: Allow users to search for and browse installed applications directly.
+
+### Tasks
+
+- [x] **2b.1** Create `ApplicationFinder` service
+  - Scan `/Applications/` for installed apps
+  - Scan `~/Applications/` for user-installed apps
+  - Scan `/System/Applications/` for system apps (display only)
+  - Extract app metadata using `AppAnalyzer`
+  - Return sorted list of discovered applications
+  - Cache results for performance
+
+- [x] **2b.2** Create `ApplicationSearchView` UI
+  - Search field with real-time filtering
+  - Scrollable list of applications
+  - Show app icon, name, bundle ID, location, and size
+  - Visual distinction for system apps (protected)
+  - Single-click to select, double-click to proceed
+  - "Cancel" and "Select Application" buttons
+  - Loading state while scanning directories
+
+- [x] **2b.3** Update drop zone UI
+  - Add "Browse Applications" button below drop zone
+  - Add "or" divider between drop zone and button
+  - Maintain existing drag-and-drop functionality
+
+- [x] **2b.4** Integrate with existing flow
+  - Add `.browseApps` state to `AppState` enum
+  - Show `ApplicationSearchView` as sheet or inline view
+  - Selected app proceeds to `AppInfoView` (same as drag-drop)
+  - Add keyboard shortcut ⌘⇧A for "Browse Applications"
+
+- [x] **2b.5** Add menu bar integration
+  - File > Browse Applications... (⌘⇧A)
+  - Notification for triggering browse view
+
+**Deliverable**: User can search and browse installed apps as alternative to drag-drop. ✅
+
+---
+
 ## Milestone 3: File Discovery Engine
 
 **Goal**: Find all files associated with a dropped application.
@@ -420,6 +462,7 @@ This document breaks down the implementation into logical milestones. Each miles
 |---|-----------|------------------|--------------|
 | 1 | Project Foundation | 2-3 hours | None |
 | 2 | Drag & Drop + App Analysis | 3-4 hours | M1 |
+| 2b | Application Search & Browse | 3-4 hours | M2 |
 | 3 | File Discovery Engine | 6-8 hours | M2 |
 | 4 | File Preview & Selection UI | 4-5 hours | M3 |
 | 5 | Basic Deletion | 3-4 hours | M4 |
@@ -432,7 +475,7 @@ This document breaks down the implementation into logical milestones. Each miles
 | 12 | Testing | 4-6 hours | M11 |
 | 13 | Distribution | 3-4 hours | M12 |
 
-**Total Estimated Effort**: ~45-55 hours
+**Total Estimated Effort**: ~48-59 hours
 
 ---
 
@@ -440,7 +483,9 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ```
 M1 → M2 → M3 → M4 → M5 (core flow complete)
-         ↓
+      ↓
+     M2b (alternative app selection)
+      ↓
     M6, M7 (safety features, can be parallel)
          ↓
         M8 (admin auth)
@@ -464,5 +509,6 @@ To begin implementation:
 
 ---
 
-*Document Version: 1.0*  
+*Document Version: 1.1*
 *Last Updated: January 2025*
+*Changelog: Added Milestone 2b - Application Search & Browse*

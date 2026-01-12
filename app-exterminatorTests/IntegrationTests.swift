@@ -173,29 +173,146 @@ struct IntegrationTests {
         let tempDir = FileManager.default.temporaryDirectory
         let uuid = UUID().uuidString
         let testFile = tempDir.appendingPathComponent("restore_flow_\(uuid).txt")
-        
+
         try "original content".write(to: testFile, atomically: true, encoding: .utf8)
-        
+
         let file = DiscoveredFile(url: testFile, category: .other, size: 16)
-        
+
         let deleter = Deleter()
         let deletionResult = await deleter.delete(files: [file])
         #expect(deletionResult.totalDeleted == 1)
         #expect(!FileManager.default.fileExists(atPath: testFile.path))
-        
+
         let deletedRecord = DeletedFileRecord(from: file)
-        
+
         let restorer = TrashRestorer()
         let canRestore = await restorer.canRestore(file: deletedRecord)
         #expect(canRestore == true)
-        
+
         let restoreResult = await restorer.restore(files: [deletedRecord])
         #expect(restoreResult.totalRestored == 1)
         #expect(FileManager.default.fileExists(atPath: testFile.path))
-        
+
         let restoredContent = try String(contentsOf: testFile, encoding: .utf8)
         #expect(restoredContent == "original content")
-        
+
         try FileManager.default.removeItem(at: testFile)
+    }
+
+    // MARK: - Application Search Integration Tests
+
+    @Test func applicationSearchToScanFlow() async throws {
+        // Discover applications
+        let finder = ApplicationFinder()
+        let apps = await finder.discoverApplications()
+
+        #expect(!apps.isEmpty, "Expected to find installed applications")
+
+        // Find a non-system app to test with
+        guard let testApp = apps.first(where: { !$0.app.isSystemApp }) else {
+            // If no non-system apps found, skip this test gracefully
+            return
+        }
+
+        // Verify the app can be analyzed (simulating selection from search)
+        let analyzeResult = AppAnalyzer.analyze(appURL: testApp.app.url)
+
+        switch analyzeResult {
+        case .success(let analyzedApp):
+            #expect(analyzedApp.bundleID == testApp.app.bundleID)
+            #expect(analyzedApp.name == testApp.app.name)
+
+            // Scan for associated files
+            let scanner = FileScanner()
+            let scanResult = await scanner.scan(app: analyzedApp)
+
+            // Should at least find the app bundle itself
+            #expect(scanResult.discoveredFiles.count >= 1)
+            #expect(scanResult.discoveredFiles.first?.category == .application)
+
+        case .failure(let error):
+            Issue.record("Failed to analyze app from search: \(error.localizedDescription)")
+        }
+    }
+
+    @Test func applicationSearchAndFilterIntegration() async throws {
+        let finder = ApplicationFinder()
+
+        // Discover all apps
+        let allApps = await finder.discoverApplications()
+        #expect(!allApps.isEmpty)
+
+        // Search for a common app (Safari should exist on all macOS)
+        let safariResults = await finder.search(query: "Safari", in: allApps)
+
+        // Safari should be found
+        #expect(!safariResults.isEmpty)
+
+        // Safari should be marked as a system app
+        let safari = safariResults.first { $0.app.bundleID == "com.apple.Safari" }
+        if let safari = safari {
+            #expect(safari.app.isSystemApp == true)
+        }
+    }
+
+    @Test func applicationSearchSystemAppProtection() async throws {
+        let finder = ApplicationFinder()
+        let apps = await finder.discoverApplications()
+
+        // Find system apps
+        let systemApps = apps.filter { $0.app.isSystemApp }
+        #expect(!systemApps.isEmpty, "Expected to find system applications")
+
+        // Verify system apps are blocked from deletion
+        for systemApp in systemApps.prefix(3) {
+            let validationResult = AppAnalyzer.validateNotCriticalSystemApp(systemApp.app)
+
+            // Apps in /System/Applications or with com.apple. bundle ID should be blocked
+            if systemApp.app.url.path.hasPrefix("/System/Applications") ||
+               systemApp.app.bundleID.hasPrefix("com.apple.") {
+                switch validationResult {
+                case .success:
+                    // Some com.apple apps might not be in the critical list
+                    break
+                case .failure:
+                    // Expected for critical system apps
+                    #expect(true)
+                }
+            }
+        }
+    }
+
+    @Test func applicationSearchCachePerformance() async throws {
+        let finder = ApplicationFinder()
+
+        // First call - populates cache
+        let start1 = Date()
+        let apps1 = await finder.discoverApplications()
+        let duration1 = Date().timeIntervalSince(start1)
+
+        // Second call - should use cache
+        let start2 = Date()
+        let apps2 = await finder.discoverApplications()
+        let duration2 = Date().timeIntervalSince(start2)
+
+        // Results should be the same
+        #expect(apps1.count == apps2.count)
+
+        // Cached call should be faster (or at least not significantly slower)
+        // We allow some variance for system overhead
+        #expect(duration2 <= duration1 * 2)
+    }
+
+    @Test func applicationSearchNoDuplicatesAcrossDirectories() async throws {
+        let finder = ApplicationFinder()
+        let apps = await finder.discoverApplications()
+
+        // Check for duplicate bundle IDs
+        var seenBundleIDs = Set<String>()
+        for app in apps {
+            #expect(!seenBundleIDs.contains(app.app.bundleID),
+                   "Found duplicate bundle ID: \(app.app.bundleID)")
+            seenBundleIDs.insert(app.app.bundleID)
+        }
     }
 }

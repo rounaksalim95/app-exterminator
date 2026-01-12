@@ -67,6 +67,25 @@ A drag-and-drop interface that:
 - Extract bundle ID from `Info.plist`
 - Extract app name and other metadata
 
+### 1b. Application Search & Browse
+
+**Description**: Users can search for and browse installed applications directly within the app, providing an alternative to drag-and-drop.
+
+**Requirements**:
+- Scan standard application directories for installed apps:
+  - `/Applications/`
+  - `~/Applications/`
+  - `/System/Applications/` (for display only, protected from deletion)
+- Display applications in a searchable, scrollable list
+- Real-time filtering as user types in search field
+- Show app icon, name, bundle ID, and location for each app
+- Sort applications alphabetically by default
+- Visual distinction between user apps and system apps
+- Single-click to select, double-click or button to proceed
+- "Browse Applications" button accessible from main drop zone
+- Keyboard shortcut: ⌘⇧A to open application browser
+- Seamless integration with existing deletion flow (selected app goes to AppInfoView)
+
 ### 2. File Discovery Engine
 
 **Description**: Scan the system for all files associated with the target application.
@@ -223,9 +242,47 @@ A drag-and-drop interface that:
 │    │                                                 │     │
 │    │            [App Icon Placeholder]              │     │
 │    │                                                 │     │
+│    │              ── or ──                          │     │
+│    │                                                 │     │
+│    │        [Browse Applications... ⌘⇧A]            │     │
+│    │                                                 │     │
 │    └─────────────────────────────────────────────────┘     │
 │                                                             │
 │    [View History]                                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Application Browser Window
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Browse Applications                           [─] [□] [×]  │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  🔍 [Search applications...                              ]  │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ [Icon] Slack                                        │   │
+│  │        com.tinyspeck.slackmacgap                    │   │
+│  │        /Applications/Slack.app               245 MB │   │
+│  │                                                     │   │
+│  │ [Icon] Spotify                                      │   │
+│  │        com.spotify.client                           │   │
+│  │        /Applications/Spotify.app             180 MB │   │
+│  │                                                     │   │
+│  │ [Icon] Visual Studio Code                           │   │
+│  │        com.microsoft.VSCode                         │   │
+│  │        /Applications/Visual Studio Code.app  350 MB │   │
+│  │                                                     │   │
+│  │ [Icon] ⚠️ System Preferences (Protected)            │   │
+│  │        com.apple.systempreferences                  │   │
+│  │        /System/Applications/...              12 MB  │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  124 applications found                                     │
+│                                                             │
+│                           [Cancel]  [Select Application]    │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -307,8 +364,9 @@ A drag-and-drop interface that:
 │  ├─────────────┤  ├─────────────┤  ├─────────────────────┤ │
 │  │ MainView    │  │ AppAnalyzer │  │ FileManager         │ │
 │  │ DropZone    │  │ FileScanner │  │ NSWorkspace         │ │
-│  │ FileList    │  │ Deleter     │  │ AuthorizationServices│ │
-│  │ HistoryView │  │ HistoryMgr  │  │ SMAppService        │ │
+│  │ AppBrowser  │  │ AppFinder   │  │ AuthorizationServices│ │
+│  │ FileList    │  │ Deleter     │  │ SMAppService        │ │
+│  │ HistoryView │  │ HistoryMgr  │  │ LSApplications      │ │
 │  └─────────────┘  └─────────────┘  └─────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -405,12 +463,15 @@ struct DeletionRecord {
 - File path matching logic
 - System app detection
 - Size calculations
+- Application discovery (ApplicationFinder)
+- Search filtering logic
 
 ### Integration Tests
 - File discovery accuracy
 - Deletion operations
 - History persistence
 - Undo functionality
+- Application search and selection flow
 
 ### Manual Testing
 - Various application types (sandboxed, non-sandboxed, Electron, etc.)
@@ -487,5 +548,6 @@ Applications in these directories are protected:
 
 ---
 
-*Document Version: 1.0*  
+*Document Version: 1.1*
 *Last Updated: January 2025*
+*Changelog: Added Application Search & Browse feature (1b)*

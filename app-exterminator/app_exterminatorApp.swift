@@ -14,6 +14,11 @@ struct AppExterminatorApp: App {
                     NotificationCenter.default.post(name: .openApp, object: nil)
                 }
                 .keyboardShortcut("o", modifiers: .command)
+
+                Button("Browse Applications...") {
+                    NotificationCenter.default.post(name: .browseApps, object: nil)
+                }
+                .keyboardShortcut("a", modifiers: [.command, .shift])
             }
             
             CommandGroup(after: .windowList) {
