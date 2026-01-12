@@ -54,9 +54,15 @@ actor HistoryManager {
         await save()
     }
     
+    @MainActor
     func createRecord(from app: TargetApplication, deletionResult: DeletionResult) async -> DeletionRecord {
         let deletedFileRecords = deletionResult.successfulDeletions.map { file in
-            DeletedFileRecord(from: file)
+            DeletedFileRecord(
+                id: file.id,
+                originalPath: file.url.path,
+                category: file.category,
+                size: file.size
+            )
         }
         
         var iconData: Data? = nil
