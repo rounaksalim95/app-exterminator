@@ -119,7 +119,7 @@ struct DeletionRecordTests {
         #expect(decoded.deletedFiles.count == original.deletedFiles.count)
     }
     
-    @Test func equatableConformance() {
+    @Test @MainActor func equatableConformance() {
         let id = UUID()
         let files = [DeletedFileRecord(originalPath: "/test", category: .application, size: 100)]
         

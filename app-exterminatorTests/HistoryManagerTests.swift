@@ -2,9 +2,10 @@ import Testing
 import Foundation
 @testable import app_exterminator
 
+@Suite(.serialized)
 struct HistoryManagerTests {
     
-    @Test func addsAndRetrievesRecords() async {
+    @Test @MainActor func addsAndRetrievesRecords() async {
         let manager = HistoryManager.shared
         
         await manager.clearHistory()
@@ -26,7 +27,7 @@ struct HistoryManagerTests {
         await manager.clearHistory()
     }
     
-    @Test func getMostRecentRecordReturnsLatest() async {
+    @Test @MainActor func getMostRecentRecordReturnsLatest() async {
         let manager = HistoryManager.shared
         
         await manager.clearHistory()
@@ -54,7 +55,7 @@ struct HistoryManagerTests {
         await manager.clearHistory()
     }
     
-    @Test func deletesRecordById() async {
+    @Test @MainActor func deletesRecordById() async {
         let manager = HistoryManager.shared
         
         await manager.clearHistory()
@@ -76,7 +77,7 @@ struct HistoryManagerTests {
         #expect(!records.contains { $0.id == record.id })
     }
     
-    @Test func clearsAllHistory() async {
+    @Test @MainActor func clearsAllHistory() async {
         let manager = HistoryManager.shared
         
         let record = DeletionRecord(
@@ -92,7 +93,7 @@ struct HistoryManagerTests {
         #expect(records.isEmpty)
     }
     
-    @Test func createsRecordFromDeletionResult() async {
+    @Test @MainActor func createsRecordFromDeletionResult() async {
         let manager = HistoryManager.shared
         
         await manager.clearHistory()
@@ -122,7 +123,7 @@ struct HistoryManagerTests {
         await manager.clearHistory()
     }
     
-    @Test func persistsAcrossLoadCycles() async {
+    @Test @MainActor func persistsAcrossLoadCycles() async {
         let manager = HistoryManager.shared
         
         await manager.clearHistory()
@@ -139,6 +140,99 @@ struct HistoryManagerTests {
         
         let records = await manager.getAllRecords()
         #expect(records.contains { $0.appName == "Persistent App" })
+        
+        await manager.clearHistory()
+    }
+    
+    @Test @MainActor func getRecordByIdReturnsCorrectRecord() async {
+        let manager = HistoryManager.shared
+        
+        await manager.clearHistory()
+        
+        let record1 = DeletionRecord(
+            appName: "First App",
+            bundleID: "com.first.app",
+            deletedFiles: []
+        )
+        
+        let record2 = DeletionRecord(
+            appName: "Second App",
+            bundleID: "com.second.app",
+            deletedFiles: []
+        )
+        
+        await manager.addRecord(record1)
+        await manager.addRecord(record2)
+        
+        let foundRecord = await manager.getRecord(by: record1.id)
+        #expect(foundRecord?.appName == "First App")
+        #expect(foundRecord?.id == record1.id)
+        
+        await manager.clearHistory()
+    }
+    
+    @Test @MainActor func getRecordByIdReturnsNilForUnknownId() async {
+        let manager = HistoryManager.shared
+        
+        await manager.clearHistory()
+        
+        let unknownId = UUID()
+        let foundRecord = await manager.getRecord(by: unknownId)
+        #expect(foundRecord == nil)
+    }
+    
+    @Test @MainActor func recordsAreSortedByDateDescending() async {
+        let manager = HistoryManager.shared
+        
+        await manager.clearHistory()
+        
+        let oldRecord = DeletionRecord(
+            date: Date().addingTimeInterval(-1000),
+            appName: "Old App",
+            bundleID: "com.old.app",
+            deletedFiles: []
+        )
+        
+        let newRecord = DeletionRecord(
+            date: Date(),
+            appName: "New App",
+            bundleID: "com.new.app",
+            deletedFiles: []
+        )
+        
+        await manager.addRecord(oldRecord)
+        await manager.addRecord(newRecord)
+        
+        let records = await manager.getAllRecords()
+        #expect(records.first?.appName == "New App")
+        
+        await manager.clearHistory()
+    }
+    
+    @Test @MainActor func multipleRecordsCanBeDeleted() async {
+        let manager = HistoryManager.shared
+        
+        await manager.clearHistory()
+        
+        let record1 = DeletionRecord(appName: "App 1", bundleID: "com.app1", deletedFiles: [])
+        let record2 = DeletionRecord(appName: "App 2", bundleID: "com.app2", deletedFiles: [])
+        let record3 = DeletionRecord(appName: "App 3", bundleID: "com.app3", deletedFiles: [])
+        
+        await manager.addRecord(record1)
+        await manager.addRecord(record2)
+        await manager.addRecord(record3)
+        
+        var records = await manager.getAllRecords()
+        let initialCount = records.count
+        #expect(initialCount >= 3)
+        
+        await manager.deleteRecord(by: record2.id)
+        
+        records = await manager.getAllRecords()
+        #expect(records.count == initialCount - 1)
+        #expect(!records.contains { $0.id == record2.id })
+        #expect(records.contains { $0.id == record1.id })
+        #expect(records.contains { $0.id == record3.id })
         
         await manager.clearHistory()
     }

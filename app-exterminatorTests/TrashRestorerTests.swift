@@ -245,4 +245,96 @@ struct TrashRestorerTests {
         
         try? FileManager.default.removeItem(at: nestedDir)
     }
+    
+    @Test func canRestoreAnyReturnsTrueWhenSomeFilesInTrash() async throws {
+        let tempDir = FileManager.default.temporaryDirectory
+        let uuid = UUID().uuidString
+        let testFile = tempDir.appendingPathComponent("canrestoreany_\(uuid).txt")
+        
+        try "test content".write(to: testFile, atomically: true, encoding: .utf8)
+        
+        var trashedURL: NSURL?
+        try FileManager.default.trashItem(at: testFile, resultingItemURL: &trashedURL)
+        
+        let records = [
+            DeletedFileRecord(originalPath: testFile.path, category: .other, size: 12),
+            DeletedFileRecord(originalPath: "/nonexistent/path_\(uuid)/file.txt", category: .other, size: 0),
+        ]
+        
+        let restorer = TrashRestorer()
+        let canRestoreAny = await restorer.canRestoreAny(files: records)
+        
+        #expect(canRestoreAny == true)
+        
+        if let trashed = trashedURL as URL? {
+            try? FileManager.default.removeItem(at: trashed)
+        }
+    }
+    
+    @Test func canRestoreAnyReturnsFalseWhenNoFilesInTrash() async {
+        let uuid = UUID().uuidString
+        let records = [
+            DeletedFileRecord(originalPath: "/nonexistent1_\(uuid)/file1.txt", category: .other, size: 0),
+            DeletedFileRecord(originalPath: "/nonexistent2_\(uuid)/file2.txt", category: .other, size: 0),
+        ]
+        
+        let restorer = TrashRestorer()
+        let canRestoreAny = await restorer.canRestoreAny(files: records)
+        
+        #expect(canRestoreAny == false)
+    }
+    
+    @Test func canRestoreAnyWithEmptyArray() async {
+        let restorer = TrashRestorer()
+        let canRestoreAny = await restorer.canRestoreAny(files: [])
+        
+        #expect(canRestoreAny == false)
+    }
+    
+    @Test func restoreHandlesDirectory() async throws {
+        let tempDir = FileManager.default.temporaryDirectory
+        let uuid = UUID().uuidString
+        let testDir = tempDir.appendingPathComponent("restore_dir_\(uuid)")
+        
+        try FileManager.default.createDirectory(at: testDir, withIntermediateDirectories: true)
+        
+        let testFile = testDir.appendingPathComponent("inner.txt")
+        try "inner content".write(to: testFile, atomically: true, encoding: .utf8)
+        
+        var trashedURL: NSURL?
+        try FileManager.default.trashItem(at: testDir, resultingItemURL: &trashedURL)
+        
+        #expect(!FileManager.default.fileExists(atPath: testDir.path))
+        
+        let record = DeletedFileRecord(originalPath: testDir.path, category: .caches, size: 100)
+        
+        let restorer = TrashRestorer()
+        let result = await restorer.restore(files: [record])
+        
+        #expect(result.totalRestored == 1)
+        #expect(FileManager.default.fileExists(atPath: testDir.path))
+        #expect(FileManager.default.fileExists(atPath: testFile.path))
+        
+        try? FileManager.default.removeItem(at: testDir)
+    }
+    
+    @Test func restoreResultFormattedRestoredSize() {
+        let records = [
+            DeletedFileRecord(originalPath: "/test1", category: .application, size: 1_048_576),
+        ]
+        
+        let result = RestoreResult(
+            successfulRestores: records,
+            failedRestores: [],
+            notInTrash: []
+        )
+        
+        #expect(result.formattedRestoredSize.contains("MB") || result.formattedRestoredSize.contains("1"))
+    }
+    
+    @Test func moveFailedErrorDescription() {
+        let error = RestoreError.moveFailed(path: "/path/to/file.txt", reason: "Access denied")
+        #expect(error.errorDescription?.contains("file.txt") == true)
+        #expect(error.errorDescription?.contains("Access denied") == true)
+    }
 }

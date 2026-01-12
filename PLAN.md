@@ -349,16 +349,19 @@ This document breaks down the implementation into logical milestones. Each miles
 
 ### Tasks
 
-- [ ] **12.1** Unit tests
-  - `AppAnalyzer` tests
-  - `FileScanner` tests (with mock file system)
-  - `HistoryManager` tests
-  - Size calculation tests
+- [x] **12.1** Unit tests
+  - `AppAnalyzer` tests (bundle ID extraction, version extraction, name fallback, system app detection)
+  - `FileScanner` tests (all directory types, search term matching, size calculations)
+  - `HistoryManager` tests (CRUD operations, persistence, record creation)
+  - Size calculation tests (files, directories, nested directories, formatting)
+  - `Deleter` tests (user files, admin files, error handling)
+  - `TrashRestorer` tests (restore, can restore, error handling)
 
-- [ ] **12.2** Integration tests
-  - Full deletion flow
-  - History persistence
-  - Undo functionality
+- [x] **12.2** Integration tests
+  - Full deletion flow (analyze → scan → delete → verify)
+  - History persistence and retrieval
+  - Undo/restore functionality (scan → delete → restore → verify)
+  - System app protection validation
 
 - [ ] **12.3** Manual testing
   - Test with various app types:
@@ -377,7 +380,7 @@ This document breaks down the implementation into logical milestones. Each miles
   - Large files/folders
   - Slow storage (HDD, network drives)
 
-**Deliverable**: Tested, stable application.
+**Deliverable**: Tested, stable application. ✅ (Unit and integration tests complete)
 
 ---
 
