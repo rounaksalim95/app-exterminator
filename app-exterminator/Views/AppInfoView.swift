@@ -4,10 +4,11 @@ struct AppInfoView: View {
     let app: TargetApplication
     let onCancel: () -> Void
     let onContinue: () -> Void
-    
+
     @State private var isAppRunning = false
     @State private var showRunningAppAlert = false
     @State private var isTerminating = false
+    @State private var loadedIcon: NSImage?
     
     var body: some View {
         VStack(spacing: 24) {
@@ -33,6 +34,7 @@ struct AppInfoView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             checkIfRunning()
+            loadIconIfNeeded()
         }
         .alert("Application is Running", isPresented: $showRunningAppAlert) {
             Button("Force Quit", role: .destructive) {
@@ -46,9 +48,13 @@ struct AppInfoView: View {
         }
     }
     
+    private var displayIcon: NSImage? {
+        app.icon ?? loadedIcon
+    }
+
     private var appHeader: some View {
         HStack(spacing: 16) {
-            if let icon = app.icon {
+            if let icon = displayIcon {
                 Image(nsImage: icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -184,6 +190,19 @@ struct AppInfoView: View {
     
     private func checkIfRunning() {
         isAppRunning = RunningAppChecker.isRunning(app: app)
+    }
+
+    private func loadIconIfNeeded() {
+        // If app already has an icon, no need to load
+        guard app.icon == nil else { return }
+
+        // Load icon asynchronously
+        Task {
+            let icon = AppAnalyzer.loadIcon(for: app.url)
+            await MainActor.run {
+                loadedIcon = icon
+            }
+        }
     }
     
     private func forceQuitApp() {
