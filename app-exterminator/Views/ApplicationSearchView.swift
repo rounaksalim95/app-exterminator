@@ -11,8 +11,11 @@ struct ApplicationSearchView: View {
     @State private var isLoading = true
     @State private var appSizes: [UUID: Int64] = [:]
     @State private var sizeCalculationTask: Task<Void, Never>?
+    @State private var lastTapTime: Date?
+    @State private var lastTappedAppId: UUID?
 
     private let applicationFinder = ApplicationFinder()
+    private let doubleClickInterval: TimeInterval = 0.3
 
     var body: some View {
         VStack(spacing: 0) {
@@ -114,30 +117,42 @@ struct ApplicationSearchView: View {
     }
 
     private var applicationListView: some View {
-        ScrollViewReader { proxy in
-            List(filteredApplications, selection: $selectedApp) { app in
-                ApplicationRowView(
-                    app: app,
-                    isSelected: selectedApp?.id == app.id,
-                    calculatedSize: appSizes[app.id]
-                )
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    selectedApp = app
-                }
-                .onTapGesture(count: 2) {
-                    selectAndProceed(app)
-                }
-                .id(app.id)
-            }
-            .listStyle(.plain)
-            .onChange(of: selectedApp) { _, newValue in
-                if let app = newValue {
-                    withAnimation {
-                        proxy.scrollTo(app.id, anchor: .center)
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(filteredApplications) { app in
+                    ApplicationRowView(
+                        app: app,
+                        isSelected: selectedApp?.id == app.id,
+                        calculatedSize: appSizes[app.id]
+                    )
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        handleTap(on: app)
                     }
                 }
             }
+            .padding(.vertical, 4)
+        }
+        .background(Color(NSColor.textBackgroundColor))
+    }
+
+    private func handleTap(on app: DiscoveredApplication) {
+        let now = Date()
+
+        // Check for double-click: same app tapped within interval
+        if let lastTime = lastTapTime,
+           let lastId = lastTappedAppId,
+           lastId == app.id,
+           now.timeIntervalSince(lastTime) < doubleClickInterval {
+            // Double-click detected - proceed with selection
+            selectAndProceed(app)
+            lastTapTime = nil
+            lastTappedAppId = nil
+        } else {
+            // Single click - select the app
+            selectedApp = app
+            lastTapTime = now
+            lastTappedAppId = app.id
         }
     }
 
@@ -160,7 +175,7 @@ struct ApplicationSearchView: View {
                 }
             }
             .buttonStyle(.borderedProminent)
-            .disabled(selectedApp == nil || selectedApp?.app.isSystemApp == true)
+            .disabled(selectedApp == nil)
             .keyboardShortcut(.return, modifiers: [])
         }
         .padding()
@@ -183,16 +198,26 @@ struct ApplicationSearchView: View {
         sizeCalculationTask?.cancel()
 
         sizeCalculationTask = Task {
-            for app in applications {
+            var pendingUpdates: [UUID: Int64] = [:]
+            let batchSize = 10
+
+            for (index, app) in applications.enumerated() {
                 // Check if task was cancelled
                 guard !Task.isCancelled else { break }
 
                 // Calculate size for this app
                 let size = await applicationFinder.calculateSize(for: app.app.url)
+                pendingUpdates[app.id] = size
 
-                // Update the sizes dictionary on main actor
-                await MainActor.run {
-                    appSizes[app.id] = size
+                // Batch update every N apps or at the end
+                if pendingUpdates.count >= batchSize || index == applications.count - 1 {
+                    let updates = pendingUpdates
+                    await MainActor.run {
+                        for (id, size) in updates {
+                            appSizes[id] = size
+                        }
+                    }
+                    pendingUpdates.removeAll()
                 }
             }
         }
@@ -203,7 +228,6 @@ struct ApplicationSearchView: View {
     }
 
     private func selectAndProceed(_ app: DiscoveredApplication) {
-        guard !app.app.isSystemApp else { return }
         onSelectApp(app.app)
     }
 }
@@ -294,7 +318,6 @@ struct ApplicationRowView: View {
                 .font(.callout)
                 .foregroundColor(.secondary)
                 .monospacedDigit()
-                .animation(.easeInOut(duration: 0.2), value: calculatedSize)
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 8)
@@ -302,7 +325,7 @@ struct ApplicationRowView: View {
         .cornerRadius(6)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(app.app.name), \(app.app.bundleID), \(displaySize)")
-        .accessibilityHint(app.app.isSystemApp ? "Protected system application, cannot be deleted" : "Double-click or press Return to select")
+        .accessibilityHint(app.app.isSystemApp ? "Protected system application" : "Double-click or press Return to select")
     }
 }
 
