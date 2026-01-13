@@ -144,17 +144,17 @@ actor ApplicationFinder {
         let results = await withTaskGroup(of: DiscoveredApplication?.self, returning: [DiscoveredApplication].self) { group in
             for itemURL in appURLs {
                 group.addTask {
-                    // Analyze app (runs on background thread)
-                    let result = await MainActor.run {
-                        AppAnalyzer.analyzeWithoutIcon(appURL: itemURL)
-                    }
-
-                    switch result {
-                    case .success(let app):
-                        // Size is deferred - set to 0 for fast loading
-                        return DiscoveredApplication(app: app, size: 0)
-                    case .failure:
-                        return nil
+                    // Analyze and create DiscoveredApplication on MainActor
+                    // since TargetApplication contains NSImage which is main-actor isolated
+                    return await MainActor.run {
+                        let result = AppAnalyzer.analyzeWithoutIcon(appURL: itemURL)
+                        switch result {
+                        case .success(let app):
+                            // Size is deferred - set to 0 for fast loading
+                            return DiscoveredApplication(app: app, size: 0)
+                        case .failure:
+                            return nil
+                        }
                     }
                 }
             }
@@ -183,8 +183,13 @@ actor ApplicationFinder {
     /// - Parameter url: The URL of the application bundle
     /// - Returns: The total size in bytes
     func calculateSize(for url: URL) async -> Int64 {
-        var totalSize: Int64 = 0
+        // Use nonisolated helper to avoid async iterator issues with FileManager.enumerator
+        calculateSizeSync(for: url)
+    }
 
+    /// Synchronous size calculation to avoid Swift 6 async iterator issues
+    private nonisolated func calculateSizeSync(for url: URL) -> Int64 {
+        let fileManager = FileManager.default
         let resourceKeys: Set<URLResourceKey> = [.totalFileAllocatedSizeKey, .isDirectoryKey]
 
         guard let enumerator = fileManager.enumerator(
@@ -196,6 +201,7 @@ actor ApplicationFinder {
             return 0
         }
 
+        var totalSize: Int64 = 0
         for case let fileURL as URL in enumerator {
             do {
                 let resourceValues = try fileURL.resourceValues(forKeys: resourceKeys)
