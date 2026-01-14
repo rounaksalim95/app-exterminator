@@ -1,33 +1,47 @@
 import Foundation
+import os.log
+
+private nonisolated(unsafe) let logger = Logger(subsystem: "com.appexterminator", category: "FileScanner")
 
 struct ScanResult {
     let app: TargetApplication
     let discoveredFiles: [DiscoveredFile]
     let totalSize: Int64
     let scanDuration: TimeInterval
-    
+
     var filesByCategory: [FileCategory: [DiscoveredFile]] {
         Dictionary(grouping: discoveredFiles, by: { $0.category })
     }
-    
+
     var formattedTotalSize: String {
         ByteCountFormatter.string(fromByteCount: totalSize, countStyle: .file)
     }
 }
 
 struct FileScanner {
-    
+
     private struct ScanDirectory {
         let path: String
         let category: FileCategory
         let requiresAdmin: Bool
     }
-    
+
+    // Safe directory prefixes for symlink validation
+    private static let safeDirectoryPrefixes: [String] = {
+        let home = NSHomeDirectory()
+        return [
+            "\(home)/Library/",
+            "/Library/",
+            "/Applications/",
+            "/System/"
+        ]
+    }()
+
     func scan(app: TargetApplication) async -> ScanResult {
         let startTime = Date()
         var discoveredFiles: [DiscoveredFile] = []
         let fileManager = FileManager.default
-        
+
         let appFile = DiscoveredFile(
             url: app.url,
             category: .application,
@@ -35,18 +49,20 @@ struct FileScanner {
             requiresAdmin: !fileManager.isWritableFile(atPath: app.url.path)
         )
         discoveredFiles.append(appFile)
-        
+
         let searchTerms = buildSearchTerms(for: app)
         let directories = getAllDirectories()
-        
+
         for directory in directories {
             let files = scanDirectory(directory, searchTerms: searchTerms, fileManager: fileManager)
             discoveredFiles.append(contentsOf: files)
         }
-        
+
         let totalSize = discoveredFiles.reduce(0) { $0 + $1.size }
         let duration = Date().timeIntervalSince(startTime)
-        
+
+        logger.info("Scanned \(discoveredFiles.count) files totaling \(totalSize) bytes in \(duration, format: .fixed(precision: 2))s")
+
         return ScanResult(
             app: app,
             discoveredFiles: discoveredFiles,
@@ -54,13 +70,13 @@ struct FileScanner {
             scanDuration: duration
         )
     }
-    
+
     private func getAllDirectories() -> [ScanDirectory] {
         let home = NSHomeDirectory()
         let userLibrary = "\(home)/Library"
-        
+
         var directories: [ScanDirectory] = []
-        
+
         // User directories
         directories.append(ScanDirectory(path: "\(userLibrary)/Application Support", category: .applicationSupport, requiresAdmin: false))
         directories.append(ScanDirectory(path: "\(userLibrary)/Caches", category: .caches, requiresAdmin: false))
@@ -73,7 +89,7 @@ struct FileScanner {
         directories.append(ScanDirectory(path: "\(userLibrary)/WebKit", category: .webKit, requiresAdmin: false))
         directories.append(ScanDirectory(path: "\(userLibrary)/Cookies", category: .cookies, requiresAdmin: false))
         directories.append(ScanDirectory(path: "\(userLibrary)/LaunchAgents", category: .launchAgents, requiresAdmin: false))
-        
+
         // System directories
         directories.append(ScanDirectory(path: "/Library/Application Support", category: .applicationSupport, requiresAdmin: true))
         directories.append(ScanDirectory(path: "/Library/Caches", category: .caches, requiresAdmin: true))
@@ -81,36 +97,48 @@ struct FileScanner {
         directories.append(ScanDirectory(path: "/Library/LaunchAgents", category: .launchAgents, requiresAdmin: true))
         directories.append(ScanDirectory(path: "/Library/LaunchDaemons", category: .launchDaemons, requiresAdmin: true))
         directories.append(ScanDirectory(path: "/Library/PrivilegedHelperTools", category: .other, requiresAdmin: true))
-        
+
         // Extension directories
         directories.append(ScanDirectory(path: "/Library/Extensions", category: .extensions, requiresAdmin: true))
         directories.append(ScanDirectory(path: "/Library/SystemExtensions", category: .extensions, requiresAdmin: true))
         directories.append(ScanDirectory(path: "\(userLibrary)/Safari/Extensions", category: .extensions, requiresAdmin: false))
-        
+
         return directories
     }
-    
+
     private func scanDirectory(_ directory: ScanDirectory, searchTerms: [String], fileManager: FileManager) -> [DiscoveredFile] {
         var results: [DiscoveredFile] = []
-        
+
         guard fileManager.fileExists(atPath: directory.path) else {
             return results
         }
-        
+
         let directoryURL = URL(fileURLWithPath: directory.path)
-        
+
+        // Check if the directory itself is a symlink pointing outside safe areas
+        if isUnsafeSymlink(directoryURL, fileManager: fileManager) {
+            logger.warning("Skipping directory \(directory.path): symlink points outside safe areas")
+            return results
+        }
+
         do {
             let contents = try fileManager.contentsOfDirectory(
                 at: directoryURL,
-                includingPropertiesForKeys: [.isDirectoryKey],
+                includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey],
                 options: []
             )
-            
+
             for itemURL in contents {
+                // Skip symlinks that point outside safe directories
+                if isUnsafeSymlink(itemURL, fileManager: fileManager) {
+                    logger.debug("Skipping \(itemURL.path): symlink points outside safe areas")
+                    continue
+                }
+
                 if matchesSearchTerms(itemURL: itemURL, searchTerms: searchTerms) {
                     let size = calculateSize(at: itemURL, fileManager: fileManager)
                     let requiresAdmin = directory.requiresAdmin || !fileManager.isWritableFile(atPath: itemURL.path)
-                    
+
                     let file = DiscoveredFile(
                         url: itemURL,
                         category: directory.category,
@@ -121,33 +149,57 @@ struct FileScanner {
                 }
             }
         } catch {
-            // Directory not accessible, skip silently
+            logger.warning("Could not scan directory \(directory.path): \(error.localizedDescription)")
         }
-        
+
         return results
     }
-    
+
+    /// Checks if a URL is a symbolic link pointing outside safe directories
+    private func isUnsafeSymlink(_ url: URL, fileManager: FileManager) -> Bool {
+        do {
+            let resourceValues = try url.resourceValues(forKeys: [.isSymbolicLinkKey])
+            guard resourceValues.isSymbolicLink == true else {
+                return false
+            }
+
+            // Resolve the symlink to get its target
+            let resolvedPath = (url.path as NSString).resolvingSymlinksInPath
+
+            // Check if resolved path is within safe directories
+            let isSafe = Self.safeDirectoryPrefixes.contains { prefix in
+                resolvedPath.hasPrefix(prefix)
+            }
+
+            return !isSafe
+        } catch {
+            // If we can't read the symlink properties, be conservative and consider it unsafe
+            logger.debug("Could not check symlink status for \(url.path): \(error.localizedDescription)")
+            return true
+        }
+    }
+
     private func buildSearchTerms(for app: TargetApplication) -> [String] {
         var terms: [String] = []
-        
+
         // Full bundle ID (e.g., "com.openai.chat")
         let bundleIDLower = app.bundleID.lowercased()
         terms.append(bundleIDLower)
-        
+
         // Bundle ID components
         let bundleComponents = app.bundleID.components(separatedBy: ".")
-        
+
         // Last component of bundle ID (e.g., "chat" from "com.openai.chat")
         if let lastComponent = bundleComponents.last, lastComponent.count > 2 {
             terms.append(lastComponent.lowercased())
         }
-        
+
         // Last two components (e.g., "openai.chat")
         if bundleComponents.count >= 2 {
             let lastTwo = bundleComponents.suffix(2).joined(separator: ".")
             terms.append(lastTwo.lowercased())
         }
-        
+
         // Organization/company name (second component, e.g., "openai")
         if bundleComponents.count >= 2 {
             let org = bundleComponents[1]
@@ -155,93 +207,95 @@ struct FileScanner {
                 terms.append(org.lowercased())
             }
         }
-        
+
         // App name variations
         let appNameLower = app.name.lowercased()
         terms.append(appNameLower)
-        
+
         // App name without spaces
         let appNameNoSpaces = appNameLower.replacingOccurrences(of: " ", with: "")
         if appNameNoSpaces != appNameLower {
             terms.append(appNameNoSpaces)
         }
-        
+
         // App name with dashes
         let appNameDashes = appNameLower.replacingOccurrences(of: " ", with: "-")
         if appNameDashes != appNameLower {
             terms.append(appNameDashes)
         }
-        
+
         // App name with underscores
         let appNameUnderscores = appNameLower.replacingOccurrences(of: " ", with: "_")
         if appNameUnderscores != appNameLower {
             terms.append(appNameUnderscores)
         }
-        
+
         // First word of app name if multi-word
         let appNameWords = app.name.components(separatedBy: " ")
         if appNameWords.count > 1, let firstWord = appNameWords.first, firstWord.count > 3 {
             terms.append(firstWord.lowercased())
         }
-        
+
         // App bundle filename (without .app)
         let appFilename = app.url.deletingPathExtension().lastPathComponent.lowercased()
         if !terms.contains(appFilename) {
             terms.append(appFilename)
         }
-        
-        // Remove duplicates and very short terms
-        let uniqueTerms = Array(Set(terms)).filter { $0.count > 2 }
+
+        // Remove duplicates and very short terms (but keep the exact app name even if short)
+        let uniqueTerms = Array(Set(terms)).filter { term in
+            term.count > 2 || term == appNameLower
+        }
         return uniqueTerms
     }
-    
+
     private func matchesSearchTerms(itemURL: URL, searchTerms: [String]) -> Bool {
         let itemName = itemURL.lastPathComponent.lowercased()
         let itemNameWithoutExtension = itemURL.deletingPathExtension().lastPathComponent.lowercased()
-        
+
         for term in searchTerms {
             // Exact match
             if itemNameWithoutExtension == term || itemName == term {
                 return true
             }
-            
+
             // Starts with term
             if itemName.hasPrefix(term) || itemNameWithoutExtension.hasPrefix(term) {
                 return true
             }
-            
+
             // Contains term
             if itemName.contains(term) || itemNameWithoutExtension.contains(term) {
                 return true
             }
-            
+
             // Plist file matching
             if itemName == "\(term).plist" {
                 return true
             }
-            
+
             // Saved state matching
             if itemName == "\(term).savedstate" {
                 return true
             }
         }
-        
+
         return false
     }
-    
+
     private func calculateSize(at url: URL, fileManager: FileManager) -> Int64 {
         var isDirectory: ObjCBool = false
         guard fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) else {
             return 0
         }
-        
+
         if isDirectory.boolValue {
             return calculateDirectorySize(at: url, fileManager: fileManager)
         } else {
             return calculateFileSize(at: url, fileManager: fileManager)
         }
     }
-    
+
     private func calculateFileSize(at url: URL, fileManager: FileManager) -> Int64 {
         do {
             let attributes = try fileManager.attributesOfItem(atPath: url.path)
@@ -250,10 +304,10 @@ struct FileScanner {
             return 0
         }
     }
-    
+
     private func calculateDirectorySize(at url: URL, fileManager: FileManager) -> Int64 {
         var totalSize: Int64 = 0
-        
+
         guard let enumerator = fileManager.enumerator(
             at: url,
             includingPropertiesForKeys: [.totalFileAllocatedSizeKey, .fileAllocatedSizeKey],
@@ -262,7 +316,7 @@ struct FileScanner {
         ) else {
             return 0
         }
-        
+
         for case let fileURL as URL in enumerator {
             do {
                 let resourceValues = try fileURL.resourceValues(forKeys: [.totalFileAllocatedSizeKey, .fileAllocatedSizeKey])
@@ -272,7 +326,7 @@ struct FileScanner {
                 continue
             }
         }
-        
+
         return totalSize
     }
 }

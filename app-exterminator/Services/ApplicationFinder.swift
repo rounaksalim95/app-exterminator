@@ -1,5 +1,8 @@
 import AppKit
 import Foundation
+import os.log
+
+private nonisolated(unsafe) let logger = Logger(subsystem: "com.appexterminator", category: "ApplicationFinder")
 
 /// A model representing a discovered application with its size information
 struct DiscoveredApplication: Identifiable, Equatable, Hashable {
@@ -133,7 +136,7 @@ actor ApplicationFinder {
                 options: [.skipsHiddenFiles]
             )
         } catch {
-            print("Error scanning directory \(directory.path): \(error.localizedDescription)")
+            logger.warning("Error scanning directory \(directory.path): \(error.localizedDescription)")
             return []
         }
 

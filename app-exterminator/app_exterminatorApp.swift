@@ -29,10 +29,12 @@ struct AppExterminatorApp: App {
             }
             
             CommandGroup(replacing: .help) {
-                Link("App Exterminator Help", destination: URL(string: "https://github.com/rounaksalim95/app-exterminator")!)
-                
+                if let helpURL = URL(string: "https://github.com/rounaksalim95/app-exterminator") {
+                    Link("App Exterminator Help", destination: helpURL)
+                }
+
                 Divider()
-                
+
                 Button("About App Exterminator") {
                     NSApplication.shared.orderFrontStandardAboutPanel(nil)
                 }

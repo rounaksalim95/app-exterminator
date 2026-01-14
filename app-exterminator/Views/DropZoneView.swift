@@ -68,21 +68,24 @@ struct DropZoneView: View {
     
     private func handleDrop(providers: [NSItemProvider]) -> Bool {
         guard let provider = providers.first else { return false }
-        
-        provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, error in
-            DispatchQueue.main.async {
-                guard error == nil,
-                      let data = item as? Data,
+
+        Task { @MainActor in
+            do {
+                let item = try await provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier)
+
+                guard let data = item as? Data,
                       let url = URL(dataRepresentation: data, relativeTo: nil) else {
                     onAppDropped(.failure(.invalidBundle))
                     return
                 }
-                
+
                 let result = AppAnalyzer.analyze(appURL: url)
                 onAppDropped(result)
+            } catch {
+                onAppDropped(.failure(.invalidBundle))
             }
         }
-        
+
         return true
     }
 }

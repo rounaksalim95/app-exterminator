@@ -1,5 +1,9 @@
 import AppKit
 import Foundation
+import Security
+import os.log
+
+private nonisolated(unsafe) let logger = Logger(subsystem: "com.appexterminator", category: "AppAnalyzer")
 
 enum AppAnalyzerError: Error, LocalizedError {
     case notAnAppBundle
@@ -48,6 +52,12 @@ struct AppAnalyzer {
     static func analyze(appURL: URL) -> Result<TargetApplication, AppAnalyzerError> {
         guard appURL.pathExtension == "app" else {
             return .failure(.notAnAppBundle)
+        }
+
+        // Verify code signature integrity (not identity) - warn if tampered
+        if case .failure = verifyCodeSignatureIntegrity(at: appURL) {
+            logger.warning("App at \(appURL.path) has an invalid or tampered code signature")
+            // We continue anyway, but log the warning - user can decide
         }
 
         let infoPlistURL = appURL
@@ -170,13 +180,47 @@ struct AppAnalyzer {
                 return true
             }
         }
-        
+
         for prefix in protectedBundleIDPrefixes {
             if bundleID.hasPrefix(prefix) {
                 return true
             }
         }
-        
+
         return false
+    }
+
+    /// Verifies code signature integrity (not identity) to detect tampered bundles
+    /// - Parameter url: URL of the app bundle
+    /// - Returns: Success if signature is valid or app is unsigned, failure if signature is tampered
+    private static func verifyCodeSignatureIntegrity(at url: URL) -> Result<Void, AppAnalyzerError> {
+        var staticCode: SecStaticCode?
+        let createResult = SecStaticCodeCreateWithPath(url as CFURL, [], &staticCode)
+
+        // If we can't create a static code reference, the app might be unsigned
+        // Unsigned apps are allowed (many legitimate apps are unsigned)
+        guard createResult == errSecSuccess, let code = staticCode else {
+            logger.debug("App at \(url.path) has no code signature (unsigned)")
+            return .success(())
+        }
+
+        // Validate the signature integrity (not identity)
+        // We're checking if the signature is valid, not who signed it
+        let flags = SecCSFlags(rawValue: kSecCSCheckAllArchitectures)
+        let validateResult = SecStaticCodeCheckValidity(code, flags, nil)
+
+        switch validateResult {
+        case errSecSuccess:
+            logger.debug("Code signature valid for \(url.path)")
+            return .success(())
+        case errSecCSSignatureFailed, errSecCSSignatureInvalid:
+            // Signature exists but is invalid/tampered
+            logger.warning("Code signature INVALID for \(url.path) - possible tampering")
+            return .failure(.invalidBundle)
+        default:
+            // Other errors (e.g., resource issues) - allow but log
+            logger.debug("Code signature check returned \(validateResult) for \(url.path)")
+            return .success(())
+        }
     }
 }
