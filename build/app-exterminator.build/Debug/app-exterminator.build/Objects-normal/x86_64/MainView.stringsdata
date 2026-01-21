@@ -1,0 +1,184 @@
+{
+  "source": "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Views/MainView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Error",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Move to Trash?",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Administrator Privileges Required",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 99
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "Move %lld items to Trash",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "This will move %lld files (%@) to Trash. %lld file(s) require administrator privileges.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "This will move %lld files (%@) to Trash. You can restore them from Trash if needed.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete with Admin Password",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 103
+        }
+      },
+      {
+        "comment": "",
+        "key": "Skip Admin Files",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 109
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld file(s) (%@) are in system directories and require your administrator password to delete. You will be prompted for your password.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "View History",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 246
+        }
+      },
+      {
+        "comment": "",
+        "key": "Scanning for files...",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 260
+        }
+      },
+      {
+        "comment": "",
+        "key": "Looking for files associated with %@",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 263
+        }
+      },
+      {
+        "comment": "",
+        "key": "Deleting %lld files",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 286
+        }
+      },
+      {
+        "comment": "",
+        "key": "Error",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 307
+        }
+      },
+      {
+        "comment": "",
+        "key": "Try Again",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 314
+        }
+      },
+      {
+        "comment": "",
+        "key": "No Associated Files Found",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 337
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ doesn't appear to have any additional files outside of its application bundle.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 340
+        }
+      },
+      {
+        "comment": "",
+        "key": "The app may be self-contained or was already cleaned up.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 346
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 350
+        }
+      }
+    ]
+  },
+  "version": 1
+}

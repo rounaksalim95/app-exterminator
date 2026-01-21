@@ -1,7 +1,9 @@
 import Foundation
 import os.log
 
-private nonisolated(unsafe) let logger = Logger(subsystem: "com.appexterminator", category: "FileScanner")
+private enum Log: Sendable {
+    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "FileScanner")
+}
 
 struct ScanResult {
     let app: TargetApplication
@@ -61,7 +63,7 @@ struct FileScanner {
         let totalSize = discoveredFiles.reduce(0) { $0 + $1.size }
         let duration = Date().timeIntervalSince(startTime)
 
-        logger.info("Scanned \(discoveredFiles.count) files totaling \(totalSize) bytes in \(duration, format: .fixed(precision: 2))s")
+        Log.logger.info("Scanned \(discoveredFiles.count) files totaling \(totalSize) bytes in \(duration, format: .fixed(precision: 2))s")
 
         return ScanResult(
             app: app,
@@ -117,7 +119,7 @@ struct FileScanner {
 
         // Check if the directory itself is a symlink pointing outside safe areas
         if isUnsafeSymlink(directoryURL, fileManager: fileManager) {
-            logger.warning("Skipping directory \(directory.path): symlink points outside safe areas")
+            Log.logger.warning("Skipping directory \(directory.path): symlink points outside safe areas")
             return results
         }
 
@@ -131,7 +133,7 @@ struct FileScanner {
             for itemURL in contents {
                 // Skip symlinks that point outside safe directories
                 if isUnsafeSymlink(itemURL, fileManager: fileManager) {
-                    logger.debug("Skipping \(itemURL.path): symlink points outside safe areas")
+                    Log.logger.debug("Skipping \(itemURL.path): symlink points outside safe areas")
                     continue
                 }
 
@@ -149,7 +151,7 @@ struct FileScanner {
                 }
             }
         } catch {
-            logger.warning("Could not scan directory \(directory.path): \(error.localizedDescription)")
+            Log.logger.warning("Could not scan directory \(directory.path): \(error.localizedDescription)")
         }
 
         return results
@@ -174,7 +176,7 @@ struct FileScanner {
             return !isSafe
         } catch {
             // If we can't read the symlink properties, be conservative and consider it unsafe
-            logger.debug("Could not check symlink status for \(url.path): \(error.localizedDescription)")
+            Log.logger.debug("Could not check symlink status for \(url.path): \(error.localizedDescription)")
             return true
         }
     }

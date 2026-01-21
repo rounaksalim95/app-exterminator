@@ -1,7 +1,9 @@
 import Foundation
 import os.log
 
-private nonisolated(unsafe) let logger = Logger(subsystem: "com.appexterminator", category: "Deleter")
+private enum Log: Sendable {
+    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "Deleter")
+}
 
 enum DeletionError: LocalizedError {
     case verificationFailed(path: String, reason: String)
@@ -75,9 +77,9 @@ actor Deleter {
             do {
                 try await trashFile(file)
                 successfulDeletions.append(file)
-                logger.info("Successfully trashed: \(file.url.path)")
+                Log.logger.info("Successfully trashed: \(file.url.path)")
             } catch {
-                logger.error("Failed to trash \(file.url.path): \(error.localizedDescription)")
+                Log.logger.error("Failed to trash \(file.url.path): \(error.localizedDescription)")
                 failedDeletions.append((file: file, error: error))
             }
         }
@@ -88,7 +90,7 @@ actor Deleter {
                 successfulDeletions.append(contentsOf: privilegedResult.successfulDeletions)
                 failedDeletions.append(contentsOf: privilegedResult.failedDeletions)
             } catch {
-                logger.error("Privileged deletion failed: \(error.localizedDescription)")
+                Log.logger.error("Privileged deletion failed: \(error.localizedDescription)")
                 for file in adminFiles {
                     failedDeletions.append((file: file, error: error))
                 }
@@ -97,7 +99,7 @@ actor Deleter {
             skippedAdminFiles = adminFiles
         }
 
-        logger.info("Deletion complete: \(successfulDeletions.count) succeeded, \(failedDeletions.count) failed, \(skippedAdminFiles.count) skipped")
+        Log.logger.info("Deletion complete: \(successfulDeletions.count) succeeded, \(failedDeletions.count) failed, \(skippedAdminFiles.count) skipped")
 
         return DeletionResult(
             successfulDeletions: successfulDeletions,

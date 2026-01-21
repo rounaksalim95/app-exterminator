@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'app-exterminatorTests' in project 'app-exterminator'
+➜ Explicit dependency on target 'app-exterminator' in project 'app-exterminator'
+Target 'app-exterminator' in project 'app-exterminator' (no dependencies)

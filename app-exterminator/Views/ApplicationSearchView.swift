@@ -228,7 +228,18 @@ struct ApplicationSearchView: View {
     }
 
     private func selectAndProceed(_ app: DiscoveredApplication) {
-        onSelectApp(app.app)
+        // Load the icon before passing the app (since analyzeWithoutIcon was used for performance)
+        let icon = AppAnalyzer.loadIcon(for: app.app.url)
+        let appWithIcon = TargetApplication(
+            id: app.app.id,
+            url: app.app.url,
+            name: app.app.name,
+            bundleID: app.app.bundleID,
+            version: app.app.version,
+            icon: icon,
+            isSystemApp: app.app.isSystemApp
+        )
+        onSelectApp(appWithIcon)
     }
 }
 

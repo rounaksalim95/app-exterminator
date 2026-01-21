@@ -1,0 +1,304 @@
+{
+  "source": "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Views/HistoryView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Clear History?",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 37
+        }
+      },
+      {
+        "comment": "",
+        "key": "Export Format",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "Export Failed",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 69
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear All History",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "This will permanently remove all deletion history. Deleted files remain in Trash.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "Export as JSON",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Export as CSV",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "Choose the format for exporting your deletion history.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "Deletion History",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld records",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "Loading history...",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "No History",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 108
+        }
+      },
+      {
+        "comment": "",
+        "key": "Deleted applications will appear here",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear History",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 134
+        }
+      },
+      {
+        "comment": "",
+        "key": "Export...",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 139
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 259
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restore from Trash?",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 325
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restore %lld files",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 329
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 334
+        }
+      },
+      {
+        "comment": "",
+        "key": "This will restore %lld files to their original locations. Files that are no longer in Trash will be skipped.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 336
+        }
+      },
+      {
+        "comment": "",
+        "key": "Deleted %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 360
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld files",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 368
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restoring...",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 412
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restore from Trash",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 416
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restore files to original locations",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 420
+        }
+      },
+      {
+        "comment": "",
+        "key": "Files are no longer in Trash",
+        "location": {
+          "startingColumn": 76,
+          "startingLine": 420
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 425
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld of %lld files restored",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 471
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restore Complete",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 468
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restore Partially Complete",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 468
+        }
+      },
+      {
+        "comment": "",
+        "key": "(%lld)",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 520
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ restored",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 545
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 552
+        }
+      }
+    ]
+  },
+  "version": 1
+}

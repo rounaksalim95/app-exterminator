@@ -1,0 +1,23 @@
+{
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Views/AppInfoView.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/AppInfoView.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/AppInfoView.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/AppInfoView.dia",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/AppInfoView.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/AppInfoView.swiftdeps"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Views/ApplicationSearchView.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/ApplicationSearchView.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/ApplicationSearchView.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/ApplicationSearchView.dia",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/ApplicationSearchView.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/ApplicationSearchView.swiftdeps"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Views/DeletionResultView.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/DeletionResultView.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/DeletionResultView.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/DeletionResultView.dia",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/DeletionResultView.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/DeletionResultView.swiftdeps"
+  }
+}

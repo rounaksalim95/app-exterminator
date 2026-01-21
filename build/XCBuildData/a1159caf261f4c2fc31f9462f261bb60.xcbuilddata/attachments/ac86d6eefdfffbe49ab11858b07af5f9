@@ -1,0 +1,159 @@
+{
+  "" : {
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app-exterminatorTests-primary.dia",
+    "emit-module-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app-exterminatorTests-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app-exterminatorTests-primary-emit-module.dia",
+    "pch" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app-exterminatorTests-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app-exterminatorTests-primary.swiftdeps"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/AppAnalyzerTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/AppAnalyzerTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/AppAnalyzerTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/AppAnalyzerTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/AppAnalyzerTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/AppAnalyzerTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/AppAnalyzerTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/AppAnalyzerTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/AppAnalyzerTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/ApplicationFinderTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/ApplicationFinderTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/ApplicationFinderTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/ApplicationFinderTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/ApplicationFinderTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/ApplicationFinderTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/ApplicationFinderTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/ApplicationFinderTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/ApplicationFinderTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/DeleterTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeleterTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeleterTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeleterTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeleterTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeleterTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeleterTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeleterTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeleterTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/DeletionRecordTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeletionRecordTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeletionRecordTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeletionRecordTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeletionRecordTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeletionRecordTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeletionRecordTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeletionRecordTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DeletionRecordTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/DiscoveredFileTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DiscoveredFileTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DiscoveredFileTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DiscoveredFileTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DiscoveredFileTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DiscoveredFileTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DiscoveredFileTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DiscoveredFileTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/DiscoveredFileTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/FileCategoryTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileCategoryTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileCategoryTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileCategoryTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileCategoryTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileCategoryTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileCategoryTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileCategoryTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileCategoryTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/FileScannerTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileScannerTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileScannerTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileScannerTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileScannerTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileScannerTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileScannerTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileScannerTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/FileScannerTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/HistoryManagerTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/HistoryManagerTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/HistoryManagerTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/HistoryManagerTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/HistoryManagerTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/HistoryManagerTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/HistoryManagerTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/HistoryManagerTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/HistoryManagerTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/IntegrationTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/IntegrationTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/IntegrationTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/IntegrationTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/IntegrationTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/IntegrationTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/IntegrationTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/IntegrationTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/IntegrationTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/PrivilegedDeleterTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/PrivilegedDeleterTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/PrivilegedDeleterTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/PrivilegedDeleterTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/PrivilegedDeleterTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/PrivilegedDeleterTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/PrivilegedDeleterTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/PrivilegedDeleterTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/PrivilegedDeleterTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/RunningAppCheckerTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/RunningAppCheckerTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/RunningAppCheckerTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/RunningAppCheckerTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/RunningAppCheckerTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/RunningAppCheckerTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/RunningAppCheckerTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/RunningAppCheckerTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/RunningAppCheckerTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/SizeCalculationTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/SizeCalculationTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/SizeCalculationTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/SizeCalculationTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/SizeCalculationTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/SizeCalculationTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/SizeCalculationTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/SizeCalculationTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/SizeCalculationTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/TargetApplicationTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TargetApplicationTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TargetApplicationTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TargetApplicationTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TargetApplicationTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TargetApplicationTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TargetApplicationTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TargetApplicationTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TargetApplicationTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/TrashRestorerTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TrashRestorerTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TrashRestorerTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TrashRestorerTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TrashRestorerTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TrashRestorerTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TrashRestorerTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TrashRestorerTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/TrashRestorerTests~partial.swiftmodule"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminatorTests/app_exterminatorTests.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app_exterminatorTests.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app_exterminatorTests.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app_exterminatorTests.dia",
+    "index-unit-output-path" : "/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app_exterminatorTests.o",
+    "llvm-bc" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app_exterminatorTests.bc",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app_exterminatorTests.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app_exterminatorTests.swiftdeps",
+    "swiftmodule" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminatorTests.build/Objects-normal/arm64/app_exterminatorTests~partial.swiftmodule"
+  }
+}

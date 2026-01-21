@@ -1,0 +1,64 @@
+{
+  "source": "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Views/DropZoneView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Drop zone for applications",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "Drag an application here to uninstall it, or press Command+Shift+A to browse applications",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "Drag an application here",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "to uninstall it completely",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Opens a searchable list of installed applications",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "or",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "Browse Applications",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 51
+        }
+      }
+    ]
+  },
+  "version": 1
+}

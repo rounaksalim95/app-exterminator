@@ -3,7 +3,9 @@ import Foundation
 import Security
 import os.log
 
-private nonisolated(unsafe) let logger = Logger(subsystem: "com.appexterminator", category: "AppAnalyzer")
+private enum Log: Sendable {
+    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "AppAnalyzer")
+}
 
 enum AppAnalyzerError: Error, LocalizedError {
     case notAnAppBundle
@@ -56,7 +58,7 @@ struct AppAnalyzer {
 
         // Verify code signature integrity (not identity) - warn if tampered
         if case .failure = verifyCodeSignatureIntegrity(at: appURL) {
-            logger.warning("App at \(appURL.path) has an invalid or tampered code signature")
+            Log.logger.warning("App at \(appURL.path) has an invalid or tampered code signature")
             // We continue anyway, but log the warning - user can decide
         }
 
@@ -200,7 +202,7 @@ struct AppAnalyzer {
         // If we can't create a static code reference, the app might be unsigned
         // Unsigned apps are allowed (many legitimate apps are unsigned)
         guard createResult == errSecSuccess, let code = staticCode else {
-            logger.debug("App at \(url.path) has no code signature (unsigned)")
+            Log.logger.debug("App at \(url.path) has no code signature (unsigned)")
             return .success(())
         }
 
@@ -211,15 +213,15 @@ struct AppAnalyzer {
 
         switch validateResult {
         case errSecSuccess:
-            logger.debug("Code signature valid for \(url.path)")
+            Log.logger.debug("Code signature valid for \(url.path)")
             return .success(())
         case errSecCSSignatureFailed, errSecCSSignatureInvalid:
             // Signature exists but is invalid/tampered
-            logger.warning("Code signature INVALID for \(url.path) - possible tampering")
+            Log.logger.warning("Code signature INVALID for \(url.path) - possible tampering")
             return .failure(.invalidBundle)
         default:
             // Other errors (e.g., resource issues) - allow but log
-            logger.debug("Code signature check returned \(validateResult) for \(url.path)")
+            Log.logger.debug("Code signature check returned \(validateResult) for \(url.path)")
             return .success(())
         }
     }

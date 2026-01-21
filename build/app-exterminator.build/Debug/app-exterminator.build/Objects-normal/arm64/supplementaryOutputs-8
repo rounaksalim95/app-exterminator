@@ -1,0 +1,23 @@
+{
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Services/PrivilegedDeleter.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/PrivilegedDeleter.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/PrivilegedDeleter.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/PrivilegedDeleter.dia",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/PrivilegedDeleter.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/PrivilegedDeleter.swiftdeps"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Services/RunningAppChecker.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/RunningAppChecker.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/RunningAppChecker.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/RunningAppChecker.dia",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/RunningAppChecker.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/RunningAppChecker.swiftdeps"
+  },
+  "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Services/TrashRestorer.swift" : {
+    "const-values" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/TrashRestorer.swiftconstvalues",
+    "dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/TrashRestorer.d",
+    "diagnostics" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/TrashRestorer.dia",
+    "object" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/TrashRestorer.o",
+    "swift-dependencies" : "/Users/rounaksalim/Documents/git/app-exterminator/build/app-exterminator.build/Debug/app-exterminator.build/Objects-normal/arm64/TrashRestorer.swiftdeps"
+  }
+}

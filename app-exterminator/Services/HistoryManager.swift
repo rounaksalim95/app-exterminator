@@ -2,7 +2,40 @@ import AppKit
 import Foundation
 import os.log
 
-private nonisolated(unsafe) let logger = Logger(subsystem: "com.appexterminator", category: "HistoryManager")
+private enum Log: Sendable {
+    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "HistoryManager")
+}
+
+private extension NSImage {
+    /// Converts NSImage to PNG data at a specified maximum size
+    /// This is more reliable for JSON serialization than TIFF
+    func pngData(maxSize: CGFloat) -> Data? {
+        // Create a scaled-down version of the image
+        let targetSize = NSSize(width: maxSize, height: maxSize)
+
+        let newImage = NSImage(size: targetSize)
+        newImage.lockFocus()
+
+        NSGraphicsContext.current?.imageInterpolation = .high
+        self.draw(
+            in: NSRect(origin: .zero, size: targetSize),
+            from: NSRect(origin: .zero, size: self.size),
+            operation: .copy,
+            fraction: 1.0
+        )
+
+        newImage.unlockFocus()
+
+        // Convert to PNG
+        guard let tiffData = newImage.tiffRepresentation,
+              let bitmap = NSBitmapImageRep(data: tiffData),
+              let pngData = bitmap.representation(using: .png, properties: [:]) else {
+            return nil
+        }
+
+        return pngData
+    }
+}
 
 actor HistoryManager {
 
@@ -13,7 +46,7 @@ actor HistoryManager {
 
     private var historyFileURL: URL? {
         guard let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
-            logger.error("Could not locate Application Support directory")
+            Log.logger.error("Could not locate Application Support directory")
             return nil
         }
         let appFolder = appSupport.appendingPathComponent("AppExterminator")
@@ -40,16 +73,16 @@ actor HistoryManager {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             records = try decoder.decode([DeletionRecord].self, from: data)
-            logger.info("Loaded \(self.records.count) history records")
+            Log.logger.info("Loaded \(self.records.count) history records")
         } catch {
-            logger.error("Failed to load history: \(error.localizedDescription)")
+            Log.logger.error("Failed to load history: \(error.localizedDescription)")
             records = []
         }
     }
 
     func save() async {
         guard let historyURL = historyFileURL else {
-            logger.error("Cannot save history: no valid file URL")
+            Log.logger.error("Cannot save history: no valid file URL")
             return
         }
 
@@ -61,9 +94,9 @@ actor HistoryManager {
             encoder.outputFormatting = .prettyPrinted
             let data = try encoder.encode(records)
             try data.write(to: historyURL, options: .atomic)
-            logger.info("Saved \(self.records.count) history records")
+            Log.logger.info("Saved \(self.records.count) history records")
         } catch {
-            logger.error("Failed to save history: \(error.localizedDescription)")
+            Log.logger.error("Failed to save history: \(error.localizedDescription)")
         }
     }
 
@@ -83,14 +116,16 @@ actor HistoryManager {
             )
         }
 
-        // Note: We no longer store icon data in history to reduce file size and privacy concerns
-        // Icons can be regenerated from the app if it's reinstalled
+        var iconData: Data? = nil
+        if let icon = app.icon {
+            iconData = icon.pngData(maxSize: 64)
+        }
 
         let record = DeletionRecord(
             date: Date(),
             appName: app.name,
             bundleID: app.bundleID,
-            appIconData: nil,
+            appIconData: iconData,
             deletedFiles: deletedFileRecords
         )
 

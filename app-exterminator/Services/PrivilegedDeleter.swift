@@ -2,7 +2,9 @@ import Foundation
 import Security
 import os.log
 
-private nonisolated(unsafe) let logger = Logger(subsystem: "com.appexterminator", category: "PrivilegedDeleter")
+private enum Log: Sendable {
+    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "PrivilegedDeleter")
+}
 
 enum PrivilegedDeletionError: LocalizedError {
     case authorizationFailed
@@ -103,7 +105,7 @@ actor PrivilegedDeleter {
                 try await deleteFileWithAuth(file: file, authRef: authRef)
                 successfulDeletions.append(file)
             } catch {
-                logger.error("Failed to delete \(file.url.path): \(error.localizedDescription)")
+                Log.logger.error("Failed to delete \(file.url.path): \(error.localizedDescription)")
                 failedDeletions.append((file: file, error: error))
             }
         }

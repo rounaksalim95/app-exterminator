@@ -1,0 +1,144 @@
+{
+  "source": "/Users/rounaksalim/Documents/git/app-exterminator/app-exterminator/Views/ApplicationSearchView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Browse Applications",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "Search applications...",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "Search applications",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "Type to filter the list of installed applications",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear search",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 82
+        }
+      },
+      {
+        "comment": "",
+        "key": "Scanning for applications...",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "No applications found",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "Could not find any applications on this system.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 107
+        }
+      },
+      {
+        "comment": "",
+        "key": "No matching applications",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "No applications match \"%@\"",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld application%@ found",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 161
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 167
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select Application",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@, %@, %@",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 338
+        }
+      },
+      {
+        "comment": "",
+        "key": "Protected system application",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 339
+        }
+      },
+      {
+        "comment": "",
+        "key": "Double-click or press Return to select",
+        "location": {
+          "startingColumn": 83,
+          "startingLine": 339
+        }
+      },
+      {
+        "comment": "",
+        "key": "Protected",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 303
+        }
+      }
+    ]
+  },
+  "version": 1
+}
