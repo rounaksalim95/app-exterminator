@@ -24,13 +24,9 @@ struct DropZoneView: View {
                         .font(.system(size: 64))
                         .foregroundColor(isTargeted ? .accentColor : .secondary)
 
-                    Text("Drag an application here")
+                    Text("Drag an application here to uninstall")
                         .font(.title2)
                         .fontWeight(.medium)
-
-                    Text("to uninstall it completely")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
 
                     // Divider with "or"
                     HStack(spacing: 12) {
