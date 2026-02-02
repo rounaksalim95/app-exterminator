@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct AppExterminatorApp: App {
+struct AppSweepApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -30,12 +30,12 @@ struct AppExterminatorApp: App {
             
             CommandGroup(replacing: .help) {
                 if let helpURL = URL(string: "https://github.com/rounaksalim95/app-exterminator") {
-                    Link("App Exterminator Help", destination: helpURL)
+                    Link("App Sweep Help", destination: helpURL)
                 }
 
                 Divider()
 
-                Button("About App Exterminator") {
+                Button("About App Sweep") {
                     NSApplication.shared.orderFrontStandardAboutPanel(nil)
                 }
             }

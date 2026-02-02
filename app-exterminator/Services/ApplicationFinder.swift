@@ -3,7 +3,7 @@ import Foundation
 import os.log
 
 private enum Log: Sendable {
-    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "ApplicationFinder")
+    nonisolated static let logger = Logger(subsystem: "com.appsweep", category: "ApplicationFinder")
 }
 
 /// A model representing a discovered application with its size information

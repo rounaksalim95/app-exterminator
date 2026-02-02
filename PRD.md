@@ -1,8 +1,8 @@
-# App Exterminator - Product Requirements Document
+# App Sweep - Product Requirements Document
 
 ## Overview
 
-**App Exterminator** is a macOS application that provides complete application removal by finding and deleting not just the app bundle, but all associated files, caches, preferences, and metadata scattered across the system.
+**App Sweep** is a macOS application that provides complete application removal by finding and deleting not just the app bundle, but all associated files, caches, preferences, and metadata scattered across the system.
 
 ### Problem Statement
 
@@ -232,7 +232,7 @@ A drag-and-drop interface that:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  App Exterminator                              [─] [□] [×]  │
+│  App Sweep                              [─] [□] [×]  │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │    ┌─────────────────────────────────────────────────┐     │
@@ -356,7 +356,7 @@ A drag-and-drop interface that:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        App Exterminator                      │
+│                        App Sweep                      │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
 │  │   UI Layer  │  │  Services   │  │   System Services   │ │

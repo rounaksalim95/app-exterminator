@@ -2,7 +2,7 @@ import Foundation
 import os.log
 
 private enum Log: Sendable {
-    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "Deleter")
+    nonisolated static let logger = Logger(subsystem: "com.appsweep", category: "Deleter")
 }
 
 enum DeletionError: LocalizedError {

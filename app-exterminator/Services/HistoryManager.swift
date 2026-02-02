@@ -3,7 +3,7 @@ import Foundation
 import os.log
 
 private enum Log: Sendable {
-    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "HistoryManager")
+    nonisolated static let logger = Logger(subsystem: "com.appsweep", category: "HistoryManager")
 }
 
 private extension NSImage {
@@ -49,7 +49,7 @@ actor HistoryManager {
             Log.logger.error("Could not locate Application Support directory")
             return nil
         }
-        let appFolder = appSupport.appendingPathComponent("AppExterminator")
+        let appFolder = appSupport.appendingPathComponent("AppSweep")
         return appFolder.appendingPathComponent("deletion_history.json")
     }
 
@@ -159,7 +159,7 @@ actor HistoryManager {
         guard let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             throw NSError(domain: "HistoryManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Application Support directory not found"])
         }
-        let appFolder = appSupport.appendingPathComponent("AppExterminator")
+        let appFolder = appSupport.appendingPathComponent("AppSweep")
 
         if !fileManager.fileExists(atPath: appFolder.path) {
             try fileManager.createDirectory(at: appFolder, withIntermediateDirectories: true)

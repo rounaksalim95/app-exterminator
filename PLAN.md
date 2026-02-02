@@ -1,4 +1,4 @@
-# App Exterminator - Implementation Plan
+# App Sweep - Implementation Plan
 
 This document breaks down the implementation into logical milestones. Each milestone is self-contained and results in a working (though incomplete) application.
 
@@ -362,8 +362,8 @@ This document breaks down the implementation into logical milestones. Each miles
 - [x] **11.2** Menu bar integration
   - File > Open Application... (⌘O)
   - Window > Deletion History (⌘⇧H)
-  - Help > App Exterminator Help (links to GitHub)
-  - Help > About App Exterminator
+  - Help > App Sweep Help (links to GitHub)
+  - Help > About App Sweep
 
 - [x] **11.3** Handle edge cases
   - Corrupted app bundles (graceful error handling)

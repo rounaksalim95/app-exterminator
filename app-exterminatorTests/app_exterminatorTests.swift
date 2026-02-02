@@ -1,7 +1,7 @@
 import Testing
 @testable import app_exterminator
 
-struct AppExterminatorTests {
+struct AppSweepTests {
     
     @Test func appModuleImportsSuccessfully() {
         #expect(true)

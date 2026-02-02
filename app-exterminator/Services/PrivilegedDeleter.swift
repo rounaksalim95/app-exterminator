@@ -3,7 +3,7 @@ import Security
 import os.log
 
 private enum Log: Sendable {
-    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "PrivilegedDeleter")
+    nonisolated static let logger = Logger(subsystem: "com.appsweep", category: "PrivilegedDeleter")
 }
 
 enum PrivilegedDeletionError: LocalizedError {

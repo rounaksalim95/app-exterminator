@@ -1,6 +1,6 @@
 //
 //  app_exterminatorUITestsLaunchTests.swift
-//  app-exterminatorUITests
+//  app-exterminatorUITests (App Sweep)
 //
 //  Created by Rounak Salim on 1/9/26.
 //

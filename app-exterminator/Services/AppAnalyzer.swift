@@ -4,7 +4,7 @@ import Security
 import os.log
 
 private enum Log: Sendable {
-    nonisolated static let logger = Logger(subsystem: "com.appexterminator", category: "AppAnalyzer")
+    nonisolated static let logger = Logger(subsystem: "com.appsweep", category: "AppAnalyzer")
 }
 
 enum AppAnalyzerError: Error, LocalizedError {
