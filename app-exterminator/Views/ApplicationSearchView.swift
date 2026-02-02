@@ -5,6 +5,7 @@ struct ApplicationSearchView: View {
     let onSelectApp: (TargetApplication) -> Void
 
     @State private var searchText = ""
+    @FocusState private var isSearchFieldFocused: Bool
     @State private var applications: [DiscoveredApplication] = []
     @State private var filteredApplications: [DiscoveredApplication] = []
     @State private var selectedApp: DiscoveredApplication?
@@ -52,6 +53,9 @@ struct ApplicationSearchView: View {
                 await filterApplications(query: newValue)
             }
         }
+        .onAppear {
+            isSearchFieldFocused = true
+        }
     }
 
     // MARK: - Subviews
@@ -71,6 +75,7 @@ struct ApplicationSearchView: View {
                 .foregroundColor(.secondary)
             TextField("Search applications...", text: $searchText)
                 .textFieldStyle(.plain)
+                .focused($isSearchFieldFocused)
                 .accessibilityLabel("Search applications")
                 .accessibilityHint("Type to filter the list of installed applications")
             if !searchText.isEmpty {
