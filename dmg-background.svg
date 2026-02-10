@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1320" viewBox="0 0 1320 1320">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f0f5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dddde5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1320" height="1320" fill="url(#bg)" />
+  <!-- Arrow: sips center-crops 1320x1320 to 1320x800 (removes 260px top/bottom)
+       Target y in cropped image: ~400 (center). Original y = 400+260 = 660.
+       App icon @2x center: x=320, Applications @2x center: x=1000.
+       Arrow spans the gap between them. -->
+  <line x1="580" y1="660" x2="725" y2="660" stroke="#666666" stroke-width="8" stroke-linecap="round" />
+  <polygon points="760,660 720,634 720,686" fill="#666666" />
+</svg>
